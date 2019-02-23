@@ -1,0 +1,3 @@
+[submodule "lti-launch"]
+	path = lti-launch
+	url = https://github.com/mrbdahlem/lti-launch.git
