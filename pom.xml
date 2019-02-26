@@ -1,0 +1,14 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>run.mycode</groupId>
+    <artifactId>commit-builder</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+
+  <packaging>pom</packaging>
+  
+  <modules>
+    <module>lti-launch</module>
+    <module>commit</module>
+  </modules>
+</project>
