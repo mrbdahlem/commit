@@ -1,10 +1,5 @@
 package run.mycode.commit.config;
 
-import run.mycode.commit.model.GithubPrincipalExtractor;
-
-
-import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
-import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -51,12 +46,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> accessTokenResponseClient() {
         DefaultAuthorizationCodeTokenResponseClient accessTokenResponseClient = new DefaultAuthorizationCodeTokenResponseClient();
         return accessTokenResponseClient;
-    }
-    
-    
-    @Bean
-    public PrincipalExtractor githubPrincipalExtractor() {
-        return new GithubPrincipalExtractor();
-    }
-    
+    }    
 }
