@@ -13,8 +13,6 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.servlet.view.RedirectView;
-import org.thymeleaf.spring5.view.ThymeleafView;
 
 @Controller
 public class LoginController {
@@ -27,9 +25,9 @@ public class LoginController {
     private OAuth2AuthorizedClientService authorizedClientService;
 
     @GetMapping("/login.html")
-    public View getLoginPage(Model model, final Principal principal) {
+    public String getLoginPage(Model model, final Principal principal) {
         if (principal != null) {
-            return new RedirectView("/");
+            return "redirect:/";
         }
     
         Map<String, String> oauth2AuthenticationUrls = new HashMap<>();
@@ -50,6 +48,6 @@ public class LoginController {
         
         model.addAttribute("urls", oauth2AuthenticationUrls);
         
-        return new ThymeleafView("login");
+        return "login";
     }
 }
