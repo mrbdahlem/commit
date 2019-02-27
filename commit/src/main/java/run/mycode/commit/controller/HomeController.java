@@ -35,7 +35,7 @@ public class HomeController {
     private OAuth2AuthorizedClientService authorizedClientService;
 
     @GetMapping(value = {"", "/", "/index.html"})
-    public String getLoginInfo(Model model, OAuth2AuthenticationToken authentication) {
+    public String showHome(Model model, OAuth2AuthenticationToken authentication) {
 
         OAuth2AuthorizedClient client = authorizedClientService.loadAuthorizedClient(authentication.getAuthorizedClientRegistrationId(), authentication.getName());
 
