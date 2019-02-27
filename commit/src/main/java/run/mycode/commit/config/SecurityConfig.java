@@ -19,7 +19,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-            .antMatchers("/oauth_login", "/loginFailure", "/favicon.ico")
+            .antMatchers("/oauth_login", "/loginFailure", "/*.ico", "/*.png", "/*.svg")
             .permitAll()
             .anyRequest()
             .authenticated()
