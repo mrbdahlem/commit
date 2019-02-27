@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -23,7 +24,9 @@ import run.mycode.commit.model.GitHubOrgListItem;
 @Controller
 public class HomeController {
 
-    private static final String authorizationRequestBaseUri = "oauth2/authorize-client";
+    @Value("${uri.github.user.orgs}")
+    private String githubUserOrgsUrl;
+    
     Map<String, String> oauth2AuthenticationUrls = new HashMap<>();
 
     @Autowired
@@ -52,10 +55,10 @@ public class HomeController {
             ResponseEntity<Map> response = restTemplate.exchange(userInfoEndpointUri, HttpMethod.GET, entity, Map.class);
             Map userAttributes = response.getBody();
             
-            if (userAttributes.get("name") != null) {
+            if (userAttributes != null && userAttributes.get("name") != null) {
                 model.addAttribute("name", userAttributes.get("name"));
             }
-            else if (userAttributes.get("login") != null){
+            else if (userAttributes != null && userAttributes.get("login") != null){
                 model.addAttribute("name", userAttributes.get("login"));
             }
             else {
@@ -74,7 +77,7 @@ public class HomeController {
                                     .getUserInfoEndpoint()
                                     .getUri();
         
-        ResponseEntity<List<GitHubOrgListItem>> response = restTemplate.exchange("https://api.github.com/user/orgs", HttpMethod.GET, entity, new ParameterizedTypeReference<List<GitHubOrgListItem>>(){});
+        ResponseEntity<List<GitHubOrgListItem>> response = restTemplate.exchange(githubUserOrgsUrl, HttpMethod.GET, entity, new ParameterizedTypeReference<List<GitHubOrgListItem>>(){});
         
         List<GitHubOrgListItem> orgs = response.getBody();
         

@@ -19,13 +19,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-            .antMatchers("/oauth_login", "/loginFailure", "/*.ico", "/*.png", "/*.svg")
+            .antMatchers("/login", "/loginFailure", "/*.ico", "/*.png", "/*.svg")
             .permitAll()
             .anyRequest()
             .authenticated()
             .and()
             .oauth2Login()
-            .loginPage("/oauth_login")
+            .loginPage("/login")
             .authorizationEndpoint()
             .baseUri("/oauth2/authorize-client")
             .authorizationRequestRepository(authorizationRequestRepository())
