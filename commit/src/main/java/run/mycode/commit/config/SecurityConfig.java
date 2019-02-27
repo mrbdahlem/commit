@@ -1,5 +1,10 @@
 package run.mycode.commit.config;
 
+import run.mycode.commit.model.GithubPrincipalExtractor;
+
+
+import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
+import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -19,7 +24,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-            .antMatchers("/oauth_login", "/loginFailure")
+            .antMatchers("/oauth_login", "/loginFailure", "/favicon.ico")
             .permitAll()
             .anyRequest()
             .authenticated()
@@ -47,4 +52,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         DefaultAuthorizationCodeTokenResponseClient accessTokenResponseClient = new DefaultAuthorizationCodeTokenResponseClient();
         return accessTokenResponseClient;
     }
+    
+    
+    @Bean
+    public PrincipalExtractor githubPrincipalExtractor() {
+        return new GithubPrincipalExtractor();
+    }
+    
 }
