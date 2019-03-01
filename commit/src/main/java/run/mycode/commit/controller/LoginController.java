@@ -3,8 +3,6 @@ package run.mycode.commit.controller;
 import java.util.HashMap;
 import java.util.Map;
 import java.security.Principal;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ResolvableType;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -32,7 +30,7 @@ public class LoginController {
     
         Map<String, String> oauth2AuthenticationUrls = new HashMap<>();
         
-        Iterable<ClientRegistration> clientRegistrations = null;
+        Iterable<ClientRegistration> clientRegistrations;
         ResolvableType type = ResolvableType.forInstance(clientRegistrationRepository)
             .as(Iterable.class);
         
