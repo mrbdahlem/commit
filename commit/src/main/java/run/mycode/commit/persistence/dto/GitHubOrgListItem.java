@@ -1,4 +1,4 @@
-package run.mycode.commit.model;
+package run.mycode.commit.persistence.dto;
 
 import java.io.Serializable;
 
