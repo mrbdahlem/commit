@@ -9,11 +9,13 @@
     <body>
         <div class="container" style="display: flex; justify-content: center; align-items: center;">
             <div class="col-sm well">
-                <div>
-                    <img src="/winkingmonkey.svg" alt="winking monkey" height="64px" style="float: right;">
-                    <h2>commit.mycode.run</h2>
+                <div style="margin-bottom: 10px">                    
+                    <h2>
+                        commit.mycode.run
+                        <img src="/winkingmonkey.svg" alt="winking monkey" height="32px">
+                    </h2>
                 </div>
-                <h3>Welcome Teachers.</h3>
+                <h3 style="clear: both;" th:text="${message} ?: 'Welcome Teachers'">Welcome Teachers.</h3>
                 <p>Use the login button to log in and set up courses for use
                     with GitHub.</p>
                 <p>If you don't have an account, you can login to create an 

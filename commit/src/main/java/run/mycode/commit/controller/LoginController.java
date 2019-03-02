@@ -3,13 +3,19 @@ package run.mycode.commit.controller;
 import java.util.HashMap;
 import java.util.Map;
 import java.security.Principal;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ResolvableType;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * Handle login requests
@@ -39,6 +45,41 @@ public class LoginController {
             return "redirect:/";
         }
     
+        // Add the providers to the current model for display on the template
+        model.addAttribute("urls", getLoginUrls());
+        
+        // Display the login template
+        return "login";
+    }
+    
+    
+    @RequestMapping(value = {"/logout.html"})
+    public String logoutDo(Model model, HttpServletRequest request, HttpServletResponse response) {
+        
+        SecurityContextHolder.clearContext();
+        
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        for (Cookie cookie : request.getCookies()) {
+            cookie.setMaxAge(0);
+        }
+
+        // Add the providers to the current model for display on the template
+        model.addAttribute("urls", getLoginUrls());
+        model.addAttribute("message", "Logged Out");
+        
+        return "login";
+    }
+    
+    /**
+     * Get all of the allowed login providers
+     * 
+     * @return a mapping between the name and login urls for all providers 
+     */
+    private Map<String, String> getLoginUrls() {
+        
         // Determine all allowed oauth2 providers
         Map<String, String> oauth2AuthenticationUrls = new HashMap<>();
         
@@ -56,10 +97,6 @@ public class LoginController {
             
         }
         
-        // Add the providers to the current model for display on the template
-        model.addAttribute("urls", oauth2AuthenticationUrls);
-        
-        // Display the login template
-        return "login";
+        return oauth2AuthenticationUrls;
     }
 }
