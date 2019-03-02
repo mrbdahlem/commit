@@ -8,14 +8,17 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import run.mycode.commit.service.GitHubUserService;
 
 @Configuration
 @PropertySource("application.properties")
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
+public class SecurityConfig extends WebSecurityConfigurerAdapter {    
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
@@ -25,16 +28,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authenticated()
             .and()
             .oauth2Login()
-            .loginPage("/login.html")
+                .loginPage("/login.html")
             .authorizationEndpoint()
-            .baseUri("/oauth2/authorize-client")
-            .authorizationRequestRepository(authorizationRequestRepository())
+                .baseUri("/oauth2/authorize-client")
+                .authorizationRequestRepository(authorizationRequestRepository())
+            .and()
+            .userInfoEndpoint()
+                .userService(userService())
             .and()
             .tokenEndpoint()
             .accessTokenResponseClient(accessTokenResponseClient())
             .and()
             .defaultSuccessUrl("/")
-            .failureUrl("/loginFailure");
+            .failureUrl("/loginFailure")
+            .and()
+            ;
     }
     
     @Bean
@@ -46,5 +54,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> accessTokenResponseClient() {
         DefaultAuthorizationCodeTokenResponseClient accessTokenResponseClient = new DefaultAuthorizationCodeTokenResponseClient();
         return accessTokenResponseClient;
-    }    
+    }
+    
+    private OAuth2UserService<OAuth2UserRequest,OAuth2User> userService() {
+        return new GitHubUserService();
+    }
 }

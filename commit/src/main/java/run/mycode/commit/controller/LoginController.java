@@ -12,6 +12,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+/**
+ * Handle login requests
+ * 
+ * @author bdahl
+ */
 @Controller
 public class LoginController {
 
@@ -19,15 +24,23 @@ public class LoginController {
     
     @Autowired
     private ClientRegistrationRepository clientRegistrationRepository;
-    @Autowired
-    private OAuth2AuthorizedClientService authorizedClientService;
-
+    
+    /**
+     * Allow the user to login using OAuth2
+     * 
+     * @param model The data model for the user's session
+     * @param principal The user's current info, should be null for initial login
+     * 
+     * @return the name of the template to display
+     */
     @GetMapping("/login.html")
     public String getLoginPage(Model model, final Principal principal) {
+        // if the user is already logged in, return to the home page
         if (principal != null) {
             return "redirect:/";
         }
     
+        // Determine all allowed oauth2 providers
         Map<String, String> oauth2AuthenticationUrls = new HashMap<>();
         
         Iterable<ClientRegistration> clientRegistrations;
@@ -44,8 +57,10 @@ public class LoginController {
             
         }
         
+        // Add the providers to the current model for display on the template
         model.addAttribute("urls", oauth2AuthenticationUrls);
         
+        // Display the login template
         return "login";
     }
 }

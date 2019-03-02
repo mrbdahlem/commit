@@ -10,16 +10,14 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.client.RestTemplate;
-import org.thymeleaf.util.StringUtils;
-import run.mycode.commit.model.GitHubOrgListItem;
+import run.mycode.commit.persistence.dto.GitHubOrgListItem;
+import run.mycode.commit.persistence.dto.User;
 
 @Controller
 public class HomeController {
@@ -29,53 +27,22 @@ public class HomeController {
     
     Map<String, String> oauth2AuthenticationUrls = new HashMap<>();
 
-    @Autowired
-    private ClientRegistrationRepository clientRegistrationRepository;
+    //@Autowired
+    //private ClientRegistrationRepository clientRegistrationRepository;
     @Autowired
     private OAuth2AuthorizedClientService authorizedClientService;
 
     @GetMapping(value = {"", "/", "/index.html"})
-    public String showHome(Model model, OAuth2AuthenticationToken authentication) {
-
-        OAuth2AuthorizedClient client = authorizedClientService.loadAuthorizedClient(authentication.getAuthorizedClientRegistrationId(), authentication.getName());
-
-        String userInfoEndpointUri = client.getClientRegistration()
-            .getProviderDetails()
-            .getUserInfoEndpoint()
-            .getUri();
-
-        if (!StringUtils.isEmpty(userInfoEndpointUri)) {
-            RestTemplate restTemplate = new RestTemplate();
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + client.getAccessToken()
-                .getTokenValue());
-
-            HttpEntity<String> entity = new HttpEntity<>("", headers);
-
-            ResponseEntity<Map> response = restTemplate.exchange(userInfoEndpointUri, HttpMethod.GET, entity, Map.class);
-            Map userAttributes = response.getBody();
-            
-            if (userAttributes != null && userAttributes.get("name") != null) {
-                model.addAttribute("name", userAttributes.get("name"));
-            }
-            else if (userAttributes != null && userAttributes.get("login") != null){
-                model.addAttribute("name", userAttributes.get("login"));
-            }
-            else {
-                model.addAttribute("name", "Anonymous User");
-            }
-        }
+    public String showHome(Model model, Authentication auth) {
+        
+        User user = (User)auth.getPrincipal();//SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        
         
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + client.getAccessToken().getTokenValue());
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + user.getGithubToken());
         
         HttpEntity<String> entity = new HttpEntity<>("", headers);
-        
-        String orgendpoint = client.getClientRegistration()
-                                    .getProviderDetails()
-                                    .getUserInfoEndpoint()
-                                    .getUri();
         
         ResponseEntity<List<GitHubOrgListItem>> response = restTemplate.exchange(githubUserOrgsUrl, HttpMethod.GET, entity, new ParameterizedTypeReference<List<GitHubOrgListItem>>(){});
         
