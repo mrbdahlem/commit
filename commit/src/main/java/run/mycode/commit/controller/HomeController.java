@@ -35,8 +35,7 @@ public class HomeController {
     @GetMapping(value = {"", "/", "/index.html"})
     public String showHome(Model model, Authentication auth) {
         
-        User user = (User)auth.getPrincipal();//SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        
+        User user = (User)auth.getPrincipal();
         
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
