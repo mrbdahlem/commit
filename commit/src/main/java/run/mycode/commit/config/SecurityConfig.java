@@ -14,11 +14,12 @@ import org.springframework.security.oauth2.client.web.AuthorizationRequestReposi
 import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import run.mycode.commit.service.GitHubUserService;
+import run.mycode.commit.service.GitHubUserOauthService;
 
 @Configuration
 @PropertySource("application.properties")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {    
+        
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
@@ -29,19 +30,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .oauth2Login()
                 .loginPage("/login.html")
-            .authorizationEndpoint()
-                .baseUri("/oauth2/authorize-client")
-                .authorizationRequestRepository(authorizationRequestRepository())
-            .and()
-            .userInfoEndpoint()
-                .userService(userService())
-            .and()
-            .tokenEndpoint()
-            .accessTokenResponseClient(accessTokenResponseClient())
-            .and()
-            .defaultSuccessUrl("/")
-            .failureUrl("/loginFailure")
-            .and()
+                .authorizationEndpoint()
+                    .baseUri("/oauth2/authorize-client")
+                    .authorizationRequestRepository(authorizationRequestRepository())
+                .and()
+                .userInfoEndpoint()
+                    .userService(userService())
+                .and()
+                .tokenEndpoint()
+                    .accessTokenResponseClient(accessTokenResponseClient())
+                .and()
+                    .defaultSuccessUrl("/")
+                    .failureUrl("/loginFailure")
+                .and()
+                
             ;
     }
     
@@ -57,6 +59,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
     
     private OAuth2UserService<OAuth2UserRequest,OAuth2User> userService() {
-        return new GitHubUserService();
+        return new GitHubUserOauthService();
     }
 }

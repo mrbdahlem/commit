@@ -17,7 +17,7 @@ import run.mycode.commit.persistence.dto.User;
  *
  * @author bdahl
  */
-public class GitHubUserService implements OAuth2UserService<OAuth2UserRequest,OAuth2User> {
+public class GitHubUserOauthService implements OAuth2UserService<OAuth2UserRequest,OAuth2User> {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest req) 
