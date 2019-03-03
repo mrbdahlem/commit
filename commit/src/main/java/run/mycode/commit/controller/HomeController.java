@@ -1,12 +1,10 @@
 package run.mycode.commit.controller;
 
-import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import run.mycode.commit.persistence.dto.GitHubOrgListItem;
 import run.mycode.commit.service.GitHubService;
 
 @Controller
@@ -14,10 +12,6 @@ import run.mycode.commit.service.GitHubService;
 public class HomeController   {
     @Autowired
     private GitHubService github;
-    
-    public HomeController() {
-        super();
-    }
     
     /**
      * Show a home page for a given user
@@ -29,8 +23,7 @@ public class HomeController   {
     @GetMapping(value = {"", "/", "/index.html"})
     public String showHome(Model model) {
         // Load the user's accessible organizations
-        Collection<GitHubOrgListItem> orgs = github.getOrgs();
-        model.addAttribute("orgs", orgs);
+        model.addAttribute("orgs", github.getOrgs());
         
         // Show the homepage
         return "home";
