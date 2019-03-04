@@ -14,7 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import run.mycode.commit.persistence.dto.GitHubOrgListItem;
-import run.mycode.commit.persistence.dto.User;
+import run.mycode.commit.persistence.dto.GitHubUser;
 
 /**
  *
@@ -42,7 +42,7 @@ abstract class GitHubRestService {
      * @return 
      */
     public Collection<GitHubOrgListItem> getOrgs() {
-        User user = (User)auth.getPrincipal();
+        GitHubUser user = (GitHubUser)auth.getPrincipal();
         
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();

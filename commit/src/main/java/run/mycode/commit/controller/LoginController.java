@@ -54,7 +54,7 @@ public class LoginController {
     
     
     @RequestMapping(value = {"/logout.html"})
-    public String logoutDo(Model model, HttpServletRequest request, HttpServletResponse response) {
+    public String doLogout(Model model, HttpServletRequest request, HttpServletResponse response) {
         
         SecurityContextHolder.clearContext();
         
@@ -71,6 +71,11 @@ public class LoginController {
         model.addAttribute("message", "Logged Out");
         
         return "login";
+    }
+    
+    @RequestMapping(value = "/disabled.html")
+    public String disabledAccount() {
+        return "disabled";
     }
     
     /**

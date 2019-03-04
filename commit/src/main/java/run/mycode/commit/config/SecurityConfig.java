@@ -1,5 +1,6 @@
 package run.mycode.commit.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -8,22 +9,24 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.web.session.SessionManagementFilter;
+import run.mycode.commit.security.UserEnabledFilter;
 import run.mycode.commit.service.GitHubUserOauthService;
 
 @Configuration
 @PropertySource("application.properties")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {    
-        
+    @Autowired
+    GitHubUserOauthService githubUserSvc;
+    
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-            .antMatchers("/login.html", "/loginFailure", "/*.ico", "/*.png", "/*.svg")
+            .antMatchers("/login.html", "/loginFailure", "/disabled.html",
+                         "/*.ico", "/*.png", "/*.svg")
             .permitAll()
             .anyRequest()
             .authenticated()
@@ -35,7 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .authorizationRequestRepository(authorizationRequestRepository())
                 .and()
                 .userInfoEndpoint()
-                    .userService(userService())
+                    .userService(githubUserSvc) 
                 .and()
                 .tokenEndpoint()
                     .accessTokenResponseClient(accessTokenResponseClient())
@@ -43,8 +46,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .defaultSuccessUrl("/")
                     .failureUrl("/loginFailure")
                 .and()
-                
-            ;
+                    .addFilterBefore(new UserEnabledFilter(), SessionManagementFilter.class)
+                ;
     }
     
     @Bean
@@ -56,9 +59,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> accessTokenResponseClient() {
         DefaultAuthorizationCodeTokenResponseClient accessTokenResponseClient = new DefaultAuthorizationCodeTokenResponseClient();
         return accessTokenResponseClient;
-    }
-    
-    private OAuth2UserService<OAuth2UserRequest,OAuth2User> userService() {
-        return new GitHubUserOauthService();
     }
 }

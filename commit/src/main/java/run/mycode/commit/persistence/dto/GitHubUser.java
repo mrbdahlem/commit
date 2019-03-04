@@ -10,13 +10,13 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -28,13 +28,15 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
  */
 @Data
 @Entity
-public class User implements OAuth2User, Serializable {
+@Table(name="user")
+public class GitHubUser implements OAuth2User, Serializable {
     @Transient
+    @EqualsAndHashCode.Exclude
     private Map<String, Object> attributes;
     
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private Long id;
+    @Column(unique=true)
+    private Long id;        // User id comes from github
     
     @Column(length = 250)
     private String name;
@@ -48,10 +50,12 @@ public class User implements OAuth2User, Serializable {
     private boolean enabled;
     
     @Column(name="roles")
+    @EqualsAndHashCode.Exclude
     private String roleString;
     
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude 
     private List<Course> courses;
     
     private String githubToken;
@@ -74,15 +78,31 @@ public class User implements OAuth2User, Serializable {
         return attributes;
     }
     
+    /**
+     * Copy data into the user
+     * @param attributes 
+     */
     public void setAttributes(Map<String, Object> attributes) {
-        this.id = ((Number)attributes.get("id")).longValue();
-        this.name = (String)attributes.get("name");
-        this.githubUsername = (String)attributes.get("login");
-        this.email = (String)attributes.get("email");
+        if (this.attributes == null) {
+            this.attributes = new HashMap<>();
+        }
+        
+        this.attributes.putAll(attributes);
+        
+        if (attributes.containsKey("id"))
+            this.id = ((Number)attributes.get("id")).longValue();
+
+        if (attributes.containsKey("name"))
+            this.name = (String)attributes.get("name");
+        
+        if (attributes.containsKey("login"))
+            this.githubUsername = (String)attributes.get("login");
+        
+        if (attributes.containsKey("email"))
+            this.email = (String)attributes.get("email");
+        
         if (attributes.get("enabled") != null)
             this.enabled = (Boolean)attributes.get("enabled");
-        else 
-            this.enabled = false;
     }
     
     public void setLogin(String name) {

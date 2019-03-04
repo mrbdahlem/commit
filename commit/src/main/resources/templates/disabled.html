@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>commit.mycode.run Login</title>
+        <link rel="stylesheet"
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+    </head>
+    <body>
+        <div class="container" style="display: flex; justify-content: center; align-items: center;">
+            <div class="col-sm well">
+                <div style="margin-bottom: 10px">                    
+                    <h2>
+                        commit.mycode.run
+                        <img src="/winkingmonkey.svg" alt="winking monkey" height="32px">
+                    </h2>
+                </div>
+                <h3 style="clear: both;" th:text="${message} ?: 'Account not enabled.'">Account not enabled.</h3>
+                <p>You can login to create an account, but your account will not
+                    be enabled until we can verify that you are a teacher. 
+                    Please make sure that your GitHub email is your school
+                    supplied email to speed this process.</p>
+            </div>
+        </div>
+    </body>
+</html>

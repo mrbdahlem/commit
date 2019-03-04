@@ -38,7 +38,7 @@ public class Course implements Serializable {
 
     @ManyToOne(cascade = CascadeType.ALL,
                fetch = FetchType.LAZY)
-    private User owner;
+    private GitHubUser owner;
 
     private String name;
 
