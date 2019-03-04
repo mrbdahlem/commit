@@ -18,12 +18,43 @@
                     </div>
                 </h3>
             </div>
-
-            <div class="list-group">
-                <p th:each="org : ${orgs}">
-                    <th:block th:text="${org.login}" class="list-group-item active">org</th:block>
-                </p>
+            
+            <ul class="nav nav-tabs" id="homeTabs">
+                <li class="nav-item active" th:if="${isAdmin != null}">
+                    <a class="nav-link" id="admin-tab active" data-toggle="tab" href="#admin" role="tab" aria-controls="welcome" aria-selected="true">Admin</a>
+                </li>   
+                <li class="nav-item" th:if="${isInstructor != null}">
+                    <a class="nav-link"  th:classappend="${!isAdmin} ? active" id="instructor-tab" data-toggle="tab" href="#instructor" role="tab" aria-controls="instructor" aria-selected="false">Instructor</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="homeTabsContent">
+                <div class="tab-pane fade active in" id="admin" role="tabpanel" aria-labelledby="instructor-tab" th:if="${isAdmin != null}">
+                    <div th:if="${disabledUsers != null}">
+                        Disabled Users:
+                        <div class="list-group">
+                            <p th:each="dUser : ${disabledUsers}">
+                                <a th:href="|/admin/enableuser/${dUser.id}|" class="btn btn-success">
+                                    <span class="glyphicon glyphicon-thumbs-up"></span>
+                                </a>
+                                <th:block th:text="${dUser.name}"></th:block>
+                                <a th:href="|mailto:${dUser.email}|" th:text="${dUser.email}"></a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" th:classappend="${isAdmin == null ? 'active in' : ''}" id="instructor" role="tabpanel" aria-labelledby="instructor-tab" th:if="${isInstructor != null}">
+                    <h1>Organizations:</h1>
+                    
+                    <div class="list-group">
+                        <p th:each="org : ${orgs}">
+                            <th:block th:text="${org.login}" class="list-group-item active">org</th:block>
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
+        
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     </body>
 </html>

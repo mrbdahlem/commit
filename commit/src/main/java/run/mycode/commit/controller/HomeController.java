@@ -1,11 +1,15 @@
 package run.mycode.commit.controller;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import run.mycode.commit.persistence.dto.GitHubUser;
 import run.mycode.commit.service.GitHubService;
+import run.mycode.commit.service.GitHubUserService;
 
 @Controller
 @Scope("session")
@@ -13,17 +17,37 @@ public class HomeController   {
     @Autowired
     private GitHubService github;
     
+    @Autowired
+    private GitHubUserService userService;
+    
     /**
      * Show a home page for a given user
      * 
      * @param model the data model for the session
+     * @param auth the current user's authentication
      * 
      * @return the template to show 
      */
     @GetMapping(value = {"", "/", "/index.html"})
-    public String showHome(Model model) {
-        // Load the user's accessible organizations
-        model.addAttribute("orgs", github.getOrgs());
+    public String showHome(Model model, Authentication auth) {
+        
+        if (auth.getPrincipal() instanceof GitHubUser) {
+            GitHubUser user = (GitHubUser) auth.getPrincipal();
+            
+            // Load the user's accessible organizations
+            model.addAttribute("orgs", github.getOrgs());
+            
+            if (user.getRoleString().contains("ADMIN")) {
+                model.addAttribute("isAdmin", true);
+                
+                List<GitHubUser> disabledUsers = userService.findDisabled();
+                
+                model.addAttribute("disabledUsers", disabledUsers);
+            }
+            if (user.getRoleString().contains("INSTRUCTOR")) {
+                model.addAttribute("isInstructor", true);
+            }
+        }
         
         // Show the homepage
         return "home";
