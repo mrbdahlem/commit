@@ -1,4 +1,4 @@
-package run.mycode.commit.controller;
+package run.mycode.commit.web.controller;
 
 import java.util.HashMap;
 import java.util.Map;

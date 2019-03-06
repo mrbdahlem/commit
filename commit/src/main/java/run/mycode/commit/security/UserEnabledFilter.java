@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.filter.GenericFilterBean;
-import run.mycode.commit.persistence.dto.GitHubUser;
+import run.mycode.commit.persistence.model.GitHubUser;
 
 /**
  * Check if a user logged in via oauth2 is enabled for access

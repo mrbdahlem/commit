@@ -14,13 +14,13 @@ import org.springframework.security.oauth2.client.web.HttpSessionOAuth2Authoriza
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.web.session.SessionManagementFilter;
 import run.mycode.commit.security.UserEnabledFilter;
-import run.mycode.commit.service.GitHubUserOauthService;
+import run.mycode.commit.persistence.service.IGitHubUserService;
 
 @Configuration
 @PropertySource("application.properties")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {    
     @Autowired
-    GitHubUserOauthService githubUserSvc;
+    IGitHubUserService githubUserSvc;
     
     @Override
     protected void configure(HttpSecurity http) throws Exception {

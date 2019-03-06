@@ -1,4 +1,4 @@
-package run.mycode.commit.persistence.dto;
+package run.mycode.commit.web.dto;
 
 import java.io.Serializable;
 import lombok.Data;

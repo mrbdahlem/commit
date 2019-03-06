@@ -4,7 +4,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import run.mycode.commit.persistence.dto.GitHubUser;
+import run.mycode.commit.persistence.model.GitHubUser;
 
 /**
  * Load/Save GitHub authenticated user information

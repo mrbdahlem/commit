@@ -1,5 +1,6 @@
 package run.mycode.commit.service;
 
+import run.mycode.commit.persistence.model.GitHubUser;
 import java.util.Collection;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,36 +14,25 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import run.mycode.commit.persistence.dto.GitHubOrgListItem;
-import run.mycode.commit.persistence.dto.GitHubUser;
+import run.mycode.commit.web.dto.GitHubOrgListItem;
 
 /**
  *
  * @author bdahl
  */
 @Service
-@Scope("session")
 abstract class GitHubRestService {    
     
     @Value("${uri.github.user.orgs}")
     private String githubUserOrgsUrl;
-    
-    private final Authentication auth;
-    
-    public GitHubRestService() {
-        super();
-        
-        auth = (Authentication)SecurityContextHolder.getContext().getAuthentication();
-    }
-    
+       
     /**
      * Retrieve a list of the organizations accessible to the user
      * @param user
      * @param url The user organization REST URL
      * @return 
      */
-    public Collection<GitHubOrgListItem> getOrgs() {
-        GitHubUser user = (GitHubUser)auth.getPrincipal();
+    public Collection<GitHubOrgListItem> getOrgs(GitHubUser user) {
         
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();

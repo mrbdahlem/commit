@@ -1,14 +1,15 @@
-package run.mycode.commit.service;
+package run.mycode.commit.persistence.service;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import run.mycode.commit.persistence.dto.GitHubUser;
 import run.mycode.commit.persistence.repository.GitHubUserRepository;
+import run.mycode.commit.persistence.model.GitHubUser;
+import run.mycode.commit.service.GitHubService;
 
 /**
  * Get user information from GitHub after an oauth login 
@@ -16,12 +17,13 @@ import run.mycode.commit.persistence.repository.GitHubUserRepository;
  * @author bdahl
  */
 @Service
-public class GitHubUserOauthService implements OAuth2UserService<OAuth2UserRequest,OAuth2User> {
+public class GitHubUserService implements IGitHubUserService {
+    
     @Autowired
     GitHubUserRepository userRepo;
     
     @Autowired
-    GitHubUserService userService;
+    GitHubService githubService;
     
     /**
      * Load and update the registered user from the authenticated user
@@ -35,7 +37,7 @@ public class GitHubUserOauthService implements OAuth2UserService<OAuth2UserReque
     public OAuth2User loadUser(OAuth2UserRequest req) 
             throws OAuth2AuthenticationException {
         
-        GitHubUser authUser = userService.downloadUserInfo(req.getAccessToken());
+        GitHubUser authUser = githubService.downloadUserInfo(req.getAccessToken());
         
         // Load the corresponding registered user (if present)
         GitHubUser regUser = userRepo.findById(authUser.getId()).orElse(null);
@@ -56,5 +58,24 @@ public class GitHubUserOauthService implements OAuth2UserService<OAuth2UserReque
         }            
 
         return regUser;
-    }    
+    }   
+
+    /**
+     * Get a list of all disabled users
+     * 
+     * @return the list of users that have not been enabled
+     */
+    public List<GitHubUser> findDisabled() {
+        return userRepo.findByEnabled(false);
+    }
+    
+    /**
+     * Activate a user account
+     * 
+     * @param user the user to activate
+     */
+    public void enableUser(GitHubUser user) {
+        user.setEnabled(true);
+        userRepo.save(user);
+    }
 }

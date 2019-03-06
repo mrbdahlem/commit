@@ -1,4 +1,4 @@
-package run.mycode.commit.controller;
+package run.mycode.commit.web.controller;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,9 +7,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import run.mycode.commit.persistence.dto.GitHubUser;
+import run.mycode.commit.persistence.model.GitHubUser;
+import run.mycode.commit.persistence.service.GitHubUserService;
 import run.mycode.commit.service.GitHubService;
-import run.mycode.commit.service.GitHubUserService;
 
 @Controller
 @Scope("session")
@@ -35,7 +35,7 @@ public class HomeController   {
             GitHubUser user = (GitHubUser) auth.getPrincipal();
             
             // Load the user's accessible organizations
-            model.addAttribute("orgs", github.getOrgs());
+            model.addAttribute("orgs", github.getOrgs(user));
             
             if (user.getRoleString().contains("ADMIN")) {
                 model.addAttribute("isAdmin", true);
