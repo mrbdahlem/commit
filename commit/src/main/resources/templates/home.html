@@ -30,24 +30,27 @@
             <div class="tab-content" id="homeTabsContent">
                 <div class="tab-pane fade active in" id="admin" role="tabpanel" aria-labelledby="instructor-tab" th:if="${isAdmin != null}">
                     <div th:if="${disabledUsers != null}">
-                        Disabled Users:
+                        <h2>Disabled Users:</h2>
                         <div class="list-group">
-                            <p th:each="dUser : ${disabledUsers}">
-                                <a th:href="|/admin/enableuser/${dUser.id}|" class="btn btn-success">
+                            <div th:each="dUser : ${disabledUsers}" class="list-group-item">
+                                <a th:href="|/admin/enableuser/${dUser.id}|" class="btn btn-success"  style="vertical-align: middle;">
                                     <span class="glyphicon glyphicon-thumbs-up"></span>
                                 </a>
-                                <th:block th:text="${dUser.name}"></th:block>
-                                <a th:href="|mailto:${dUser.email}|" th:text="${dUser.email}"></a>
-                            </p>
+                                <div style="margin-left: 20px; display: inline-block; vertical-align: middle;">
+                                    Name: <th:block th:text="${dUser.name}"></th:block><br/>
+                                    Github Username: <th:block th:text="${dUser.githubUsername}"></th:block><br/>
+                                    Email: <a th:href="|mailto:${dUser.email}|" th:text="${dUser.email}"></a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="tab-pane fade" th:classappend="${isAdmin == null ? 'active in' : ''}" id="instructor" role="tabpanel" aria-labelledby="instructor-tab" th:if="${isInstructor != null}">
-                    <h1>Organizations:</h1>
+                    <h2>Organizations:</h2>
                     
                     <div class="list-group">
-                        <p th:each="org : ${orgs}">
-                            <th:block th:text="${org.login}" class="list-group-item active">org</th:block>
+                        <p th:each="org : ${orgs}" class="list-group-item">
+                            <th:block th:text="${org.login}">org</th:block>
                         </p>
                     </div>
                 </div>
