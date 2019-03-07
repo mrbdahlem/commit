@@ -19,8 +19,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import run.mycode.commit.persistence.model.Course;
 
 /**
  * A web-login user of the commit program
@@ -30,7 +30,7 @@ import run.mycode.commit.persistence.model.Course;
 @Data
 @Entity
 @Table(name="user")
-public class GitHubUser implements OAuth2User, Serializable {
+public class GitHubUser implements OAuth2User, UserDetails, Serializable {
     @Transient
     @EqualsAndHashCode.Exclude
     private Map<String, Object> attributes;
@@ -112,5 +112,30 @@ public class GitHubUser implements OAuth2User, Serializable {
     
     public String getLogin() {
         return this.githubUsername;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.githubToken;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.githubUsername;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
     }
 }

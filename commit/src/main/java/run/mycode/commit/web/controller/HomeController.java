@@ -1,6 +1,5 @@
 package run.mycode.commit.web.controller;
 
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.Authentication;
@@ -37,15 +36,12 @@ public class HomeController   {
             // Load the user's accessible organizations
             model.addAttribute("orgs", github.getOrgs(user));
             
-            if (user.getRoleString().contains("ADMIN")) {
-                model.addAttribute("isAdmin", true);
-                
-                List<GitHubUser> disabledUsers = userService.findDisabled();
-                
-                model.addAttribute("disabledUsers", disabledUsers);
+            if (user.getRoleString().contains("ROLE_ADMIN")) {
+                model.addAttribute("disabledUsers", userService.findDisabled());
             }
-            if (user.getRoleString().contains("INSTRUCTOR")) {
-                model.addAttribute("isInstructor", true);
+            
+            if (user.getRoleString().contains("ROLE_INSTRUCTOR")) {
+                
             }
         }
         

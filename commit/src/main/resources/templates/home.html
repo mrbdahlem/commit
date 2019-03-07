@@ -2,33 +2,45 @@
 <html>
     <head>
         <title>commit.mycode.run</title>
+        <meta name="_csrf" th:content="${_csrf.token}"/>
+	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <link rel="stylesheet"
               href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
     </head>
     <body>
         <div class="container">
-            <div class="container">
-                <h3>
-                    <div class="label label-info">
-                        Welcome, <span th:text="${#authentication.name}">user</span>!
-                    </div>
-                    <div class="pull-right">
-                        <a href="/logout.html" class="btn btn-link">Log out</a>
-                    </div>
-                </h3>
-            </div>
+            <nav class="navbar navbar-inverse navbar-fixed-top">
+                <div class="container">
+                  <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                      <span class="sr-only">Toggle navigation</span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">commit.mycode.run<img src="/winkingmonkey.svg" alt="winking monkey" style="display: inline-block; vertical-align:bottom; height: 1.5em;"></a>
+                  </div>
+                  <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="/logout.html" class="btn btn-secondary">Logout <th:block sec:authentication="name">user</th:block></a>
+                        </li>
+                    </ul>
+                  </div><!--/.nav-collapse -->
+                </div>
+            </nav>
             
             <ul class="nav nav-tabs" id="homeTabs">
-                <li class="nav-item active" th:if="${isAdmin != null}">
-                    <a class="nav-link" id="admin-tab active" data-toggle="tab" href="#admin" role="tab" aria-controls="welcome" aria-selected="true">Admin</a>
+                <li class="nav-item active" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" id="admin-tab" data-toggle="tab" href="#admin" role="tab" aria-controls="welcome" aria-selected="true">Admin</a>
                 </li>   
-                <li class="nav-item" th:if="${isInstructor != null}">
-                    <a class="nav-link"  th:classappend="${!isAdmin} ? active" id="instructor-tab" data-toggle="tab" href="#instructor" role="tab" aria-controls="instructor" aria-selected="false">Instructor</a>
+                <li class="nav-item" th:classappend="${#authorization.expression('hasRole(''ADMIN'')')?'':'active'}"  sec:authorize="hasRole('INSTRUCTOR')">
+                    <a class="nav-link" id="instructor-tab" data-toggle="tab" href="#instructor" role="tab" aria-controls="instructor" aria-selected="false">Instructor</a>
                 </li>
             </ul>
-            <div class="tab-content" id="homeTabsContent">
-                <div class="tab-pane fade active in" id="admin" role="tabpanel" aria-labelledby="instructor-tab" th:if="${isAdmin != null}">
+            <div class="tab-content">
+                <div class="tab-pane fade active in" id="admin" role="tabpanel" aria-labelledby="instructor-tab"  sec:authorize="hasRole('ADMIN')">
                     <div th:if="${disabledUsers != null}">
                         <h2>Disabled Users:</h2>
                         <div class="list-group">
@@ -45,7 +57,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane fade" th:classappend="${isAdmin == null ? 'active in' : ''}" id="instructor" role="tabpanel" aria-labelledby="instructor-tab" th:if="${isInstructor != null}">
+                <div class="tab-pane fade" th:classappend="${#authorization.expression('hasRole(''ADMIN'')')?'':'active in'}" id="instructor" role="tabpanel" aria-labelledby="instructor-tab" >
                     <h2>Your Courses:</h2>
                     <div class="list-group">
                         <div class="list-group-item">
