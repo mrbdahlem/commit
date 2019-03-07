@@ -48,11 +48,14 @@
                                 <a th:href="|/admin/enableuser/${dUser.id}|" class="btn btn-success" style="vertical-align: middle;">
                                     <span class="glyphicon glyphicon-thumbs-up"></span>
                                 </a>
-                                <div style="margin-left: 20px; display: inline-block; vertical-align: middle;">
+                                <div style="margin-left: 20px; margin-right: 20px; display: inline-block; vertical-align: middle;">
                                     Name: <th:block th:text="${dUser.name}"></th:block><br/>
                                     Github Username: <th:block th:text="${dUser.githubUsername}"></th:block><br/>
                                     Email: <a th:href="|mailto:${dUser.email}|" th:text="${dUser.email}"></a>
                                 </div>
+                                <a th:href="|/admin/deleteuser/${dUser.id}|" class="btn btn-danger" style="vertical-align: middle;">
+                                    <span class="glyphicon glyphicon-thumbs-down"></span>
+                                </a>
                             </div>
                         </div>
                     </div>
