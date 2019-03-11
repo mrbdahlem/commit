@@ -21,18 +21,19 @@
                 <p>If you don't have an account, you can login to create an 
                     account, but your account will not be enabled until we can
                     verify that you are a teacher. Please make sure that your
-                    GitHub email is your school supplied email to speed this
-                    process.</p>
+                    GitHub profile includes your institution and that your 
+                    public email is set to your institution supplied email to
+                    speed this process.</p>
                 <div class="list-group">
                     <p th:each="url : ${urls}">
                         <a th:text="|Login with ${url.key}|" th:href="${url.value}" class="list-group-item active">Client</a>
                     </p>
                 </div>
-                <p>Note: signing in will enable commit.mycode.run to access your
-                   GitHub email for verification purposes, access to read and
-                   write to your repositories (in any organizations you select)
-                   as is required for creating student repositories in those
-                   organizations.</p>
+                <p>Note: Signing in will enable commit.mycode.run to access your
+                    GitHub profile and email for verification purposes, and 
+                    access to read and write to your repositories (in any 
+                    organizations you select) as is required for cloning student
+                    repositories in those organizations.</p>
             </div>
         </div>
     </body>
