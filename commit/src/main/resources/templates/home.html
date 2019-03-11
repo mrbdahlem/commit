@@ -7,29 +7,12 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <link rel="stylesheet"
               href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/css/commitVweb.css" />
+        <link sec:authorize="hasRole('ADMIN')" rel="stylesheet" href="/css/commitAdmin.css" />
     </head>
     <body>
         <div class="container">
-            <nav class="navbar navbar-inverse navbar-fixed-top">
-                <div class="container">
-                  <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                      <span class="sr-only">Toggle navigation</span>
-                      <span class="icon-bar"></span>
-                      <span class="icon-bar"></span>
-                      <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="/">commit.mycode.run<img src="/winkingmonkey.svg" alt="winking monkey" style="display: inline-block; vertical-align:bottom; height: 1.5em;"></a>
-                  </div>
-                  <div id="navbar" class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="/logout.html" class="btn btn-secondary">Logout <th:block sec:authentication="name">user</th:block></a>
-                        </li>
-                    </ul>
-                  </div><!--/.nav-collapse -->
-                </div>
-            </nav>
+            <nav th:replace="fragments/ui.html :: navbar">commit.mycode.run</nav>
             
             <ul class="nav nav-tabs" id="homeTabs">
                 <li class="nav-item active" sec:authorize="hasRole('ADMIN')">
@@ -43,19 +26,9 @@
                 <div class="tab-pane fade active in" id="admin" role="tabpanel" aria-labelledby="instructor-tab"  sec:authorize="hasRole('ADMIN')">
                     <div th:if="${disabledUsers != null}">
                         <h2>Disabled Users:</h2>
-                        <div class="list-group">
-                            <div th:each="dUser : ${disabledUsers}" class="list-group-item">
-                                <a th:href="|/admin/enableuser/${dUser.id}|" class="btn btn-success" style="vertical-align: middle;">
-                                    <span class="glyphicon glyphicon-thumbs-up"></span>
-                                </a>
-                                <div style="margin-left: 20px; margin-right: 20px; display: inline-block; vertical-align: middle;">
-                                    Name: <th:block th:text="${dUser.name}"></th:block><br/>
-                                    Github Username: <th:block th:text="${dUser.githubUsername}"></th:block><br/>
-                                    Email: <a th:href="|mailto:${dUser.email}|" th:text="${dUser.email}"></a>
-                                </div>
-                                <a th:href="|/admin/deleteuser/${dUser.id}|" class="btn btn-danger" style="vertical-align: middle;">
-                                    <span class="glyphicon glyphicon-thumbs-down"></span>
-                                </a>
+                        <div class="container">
+                            <div th:each="dUser : ${disabledUsers}" th:insert="fragments/admin.html :: enableUserCard" class="card userCard">
+                                
                             </div>
                         </div>
                     </div>

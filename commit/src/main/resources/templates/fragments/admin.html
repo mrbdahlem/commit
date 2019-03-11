@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Admin Interface elements</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div th:fragment="enableUserCard" class="card-body">
+            <h2 class="card-title"><th:block th:text="${dUser.name}"></th:block></h2>
+            <a th:href="|/admin/enableuser/${dUser.id}|" class="btn btn-success" style="vertical-align: middle;">
+                <span class="glyphicon glyphicon-thumbs-up"></span>
+            </a>
+            <div style="margin-left: 20px; margin-right: 20px; display: inline-block; vertical-align: middle;">
+                Github Username: <a th:href="|https://github.com/${dUser.githubUsername}|" th:text="${dUser.githubUsername}" target="_blank"></a><br/>
+                Email: <a th:href="|mailto:${dUser.email}|" th:text="${dUser.email}"></a>
+            </div>
+            <a th:href="|/admin/deleteuser/${dUser.id}|" class="btn btn-danger" style="vertical-align: middle;">
+                <span class="glyphicon glyphicon-thumbs-down"></span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,13 @@
+.userCard {
+    border: 1px solid gray;
+    border-radius: 5px;
+    width: fit-content;
+    padding: 15px;
+    display: inline-block;
+    margin-right: 15px;
+    margin-bottom: 15px;
+}
+
+.userCard .card-title {
+    margin-top: 0;
+}
