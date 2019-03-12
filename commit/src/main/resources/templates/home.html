@@ -27,9 +27,7 @@
                     <div th:if="${disabledUsers != null}">
                         <h2>Disabled Users:</h2>
                         <div class="container">
-                            <div th:each="dUser : ${disabledUsers}" th:insert="fragments/admin.html :: enableUserCard" class="card userCard">
-                                
-                            </div>
+                            <th:block th:each="dUser : ${disabledUsers}" th:insert="fragments/admin.html :: enableUserCard"></th:block>
                         </div>
                     </div>
                 </div>
@@ -53,8 +51,8 @@
                 </div>
             </div>
         </div>
-        
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <script sec:authorize="hasRole('ADMIN')" src="/js/admin.js"></script>
     </body>
 </html>

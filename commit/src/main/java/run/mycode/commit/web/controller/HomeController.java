@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import run.mycode.commit.persistence.model.GitHubUser;
-import run.mycode.commit.persistence.service.GitHubUserService;
+import run.mycode.commit.persistence.service.IGitHubUserService;
 import run.mycode.commit.service.GitHubService;
 
 @Controller
@@ -17,7 +17,7 @@ public class HomeController   {
     private GitHubService github;
     
     @Autowired
-    private GitHubUserService userService;
+    private IGitHubUserService userService;
     
     /**
      * Show a home page for a given user
@@ -33,15 +33,14 @@ public class HomeController   {
         if (auth.getPrincipal() instanceof GitHubUser) {
             GitHubUser user = (GitHubUser) auth.getPrincipal();
             
-            // Load the user's accessible organizations
-            model.addAttribute("orgs", github.getOrgs(user));
             
             if (user.getRoleString().contains("ROLE_ADMIN")) {
                 model.addAttribute("disabledUsers", userService.findDisabled());
             }
             
             if (user.getRoleString().contains("ROLE_INSTRUCTOR")) {
-                
+                // Load the user's accessible organizations
+//                model.addAttribute("orgs", github.getOrgs(user));
             }
         }
         

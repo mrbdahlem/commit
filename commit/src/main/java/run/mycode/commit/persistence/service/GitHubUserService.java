@@ -65,6 +65,7 @@ public class GitHubUserService implements IGitHubUserService {
      * 
      * @return the list of users that have not been enabled
      */
+    @Override
     public List<GitHubUser> findDisabled() {
         return userRepo.findByEnabled(false);
     }
@@ -77,5 +78,33 @@ public class GitHubUserService implements IGitHubUserService {
     public void enableUser(GitHubUser user) {
         user.setEnabled(true);
         userRepo.save(user);
+    }
+
+    @Override
+    public boolean deleteUser(String username) {
+        GitHubUser user = userRepo.findByGithubUsername(username);
+        if (user == null) {
+            return false;
+        }
+        
+        userRepo.delete(user);
+        return true;
+    }
+
+    @Override
+    public boolean enableUser(String username) {
+        GitHubUser user = userRepo.findByGithubUsername(username);
+        if (user == null) {
+            return false;
+        }
+        
+        // Make sure the user defaults to an instructor
+        if (user.getRoleString() == null || user.getRoleString().isEmpty()) {
+            user.setRoleString("ROLE_INSTRUCTOR");
+        }
+        
+        user.setEnabled(true);
+        userRepo.save(user);
+        return true;
     }
 }
