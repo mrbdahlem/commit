@@ -36,4 +36,9 @@ public class CourseService implements ICourseService {
     public Set<Course> findByOwner(GitHubUser owner) {
         return courseRepo.findByOwner(owner);
     }
+
+    @Override
+    public Course getByKey(String key) {
+        return courseRepo.findById(key).orElse(null);
+    }
 }

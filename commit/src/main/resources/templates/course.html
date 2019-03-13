@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title th:text='|commit.mycode.run ${course != null and course.name != null ? course.name : "Course"}|'>commit.mycode.run Course</title>
+        <th:block th:if="${userIsOwner}">
+            <meta name="_csrf" th:content="${_csrf.token}"/>
+            <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+        </th:block>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet"
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/css/commitVweb.css" />
+    </head>
+    <body>
+        <nav th:replace="fragments/ui.html :: navbar">commit.mycode.run</nav>
+        
+        <div class='container' style="margin-top: 80px;" th:with="user=${#authentication.getPrincipal()}">
+            <form th:if="${course != null}" method="POST">
+                <div class="form-group">    
+                    <label for="courseName"><h2>Edit course:</h2></label>
+                    <input type='text' class='form-control form-control-lg'
+                        name='courseName' style="font-size: 2em; height: auto;" 
+                        placeholder='Course Name' th:value='${course.name}' />
+                </div>
+                <div class="form-group">
+                    <label for="courseKey">Consumer key:</label>
+                    <input type='text' class='form-control' name='courseKey'
+                        th:value='${course.key}' readonly />
+                </div>
+                <div class="form-group">
+                    <label for="courseSecret">Shared secret:</label>
+                    <input type='text' class='form-control' name='courseSecret' 
+                           th:value='${course.sharedSecret}' readonly />
+                </div>
+                <div class="form-group">
+                    <label for="courseOrganization">Default organization to copy assignments from:</label>
+                    <select class='form-control' name='courseOrganization' 
+                           th:value='${course.defaultAssignmentOrganization}'>
+                        <option th:each="org : ${orgs}" th:value="${org.id}" th:text="${org.login}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="studentOrganization">Organization to clone student copies into:</label>
+                    <select class='form-control' name='studentOrganization' 
+                           th:value='${course.studentOrganization}'>
+                        <option th:each="org : ${orgs}" th:value="${org.id}" th:text="${org.login}"></option>
+                    </select>
+                </div>
+                <th:block th:if="${userIsOwner}">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type="submit" action="" class="btn btn-primary pull-right">Update</button>
+                </th:block>
+            </form>
+            
+            <div th:if="${course == null}" class="container">
+                This course does not exist, or you do not have permission to view it.
+            </div>
+        </div>
+    </body>
+</html>

@@ -14,10 +14,7 @@ import run.mycode.commit.service.GitHubService;
 
 @Controller
 @Scope("session")
-public class HomeController   {
-    @Autowired
-    private GitHubService github;
-    
+public class HomeController   {    
     @Autowired
     private IGitHubUserService userService;
     
@@ -45,8 +42,6 @@ public class HomeController   {
             
             if (user.getRoleString().contains("ROLE_INSTRUCTOR")) {
                 model.addAttribute("courseList", courseService.findByOwner(user));
-                // Load the user's accessible organizations
-//                model.addAttribute("orgs", github.getOrgs(user));
             }
         }
         

@@ -20,5 +20,7 @@ public interface ICourseService {
      */
     public Course createCourse(String name, GitHubUser owner);    
     
+    public Course getByKey(String key);
+    
     public Set<Course> findByOwner(GitHubUser owner);
 }

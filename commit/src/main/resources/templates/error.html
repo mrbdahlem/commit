@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>commit.mycode.run Login</title>
+        <link rel="stylesheet"
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+    </head>
+    <body>
+        <div class="container" style="display: flex; justify-content: center; align-items: center;">
+            <div class="col-sm well">
+                <div style="margin-bottom: 10px">                    
+                    <h2>
+                        commit.mycode.run
+                        <img src="/winkingmonkey.svg" alt="winking monkey" style="display: inline-block; height: 1.2em; vertical-align: bottom;">
+                    </h2>
+                </div>
+                <h3 style="clear: both;" th:text="${message} ?: 'Error'">Error</h3>
+
+                <a href="/" class="btn btn-primary">Go to dashboard.</a>
+
+                <p th:text="${status}"></p>
+                <p th:text="${error}"></p>
+                <p th:text="${exception}"></p>
+                <pre th:text="${trace}"/>
+            </div>
+        </div>
+    </body>
+</html>
