@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Admin home section</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <th:block th:fragment='adminTabContents'>
+            <div th:if="${disabledUsers != null}">
+                <h2>Disabled Users:</h2>
+                <div class="container">
+                    <th:block th:each="dUser : ${disabledUsers}" th:insert="fragments/admin_ui.html :: enableUserCard"></th:block>
+                </div>
+            </div>
+        </th:block>
+    </body>
+</html>

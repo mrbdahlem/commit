@@ -29,7 +29,7 @@ public interface IGitHubUserService  extends OAuth2UserService<OAuth2UserRequest
      */
     @Override
     OAuth2User loadUser(OAuth2UserRequest req) throws OAuth2AuthenticationException;
-    
+       
     /**
      * Get a list of all disabled users
      * 
@@ -52,4 +52,6 @@ public interface IGitHubUserService  extends OAuth2UserService<OAuth2UserRequest
      * or could not be enabled
      */
     public boolean enableUser(String username);
+    
+    public GitHubUser findById(Long id);
 }

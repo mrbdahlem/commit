@@ -16,43 +16,24 @@
             
             <ul class="nav nav-tabs" id="homeTabs">
                 <li class="nav-item active" sec:authorize="hasRole('ADMIN')">
-                    <a class="nav-link" id="admin-tab" data-toggle="tab" href="#admin" role="tab" aria-controls="welcome" aria-selected="true">Admin</a>
+                    <a class="nav-link" id="admin-tab" data-toggle="tab" href="#adminpanel" role="tab" aria-controls="welcome" aria-selected="true">Admin</a>
                 </li>   
                 <li class="nav-item" th:classappend="${#authorization.expression('hasRole(''ADMIN'')')?'':'active'}"  sec:authorize="hasRole('INSTRUCTOR')">
-                    <a class="nav-link" id="instructor-tab" data-toggle="tab" href="#instructor" role="tab" aria-controls="instructor" aria-selected="false">Instructor</a>
+                    <a class="nav-link" id="instructor-tab" data-toggle="tab" href="#instructorpanel" role="tab" aria-controls="instructor" aria-selected="false">Instructor</a>
                 </li>
             </ul>
             <div class="tab-content">
-                <div class="tab-pane fade active in" id="admin" role="tabpanel" aria-labelledby="instructor-tab"  sec:authorize="hasRole('ADMIN')">
-                    <div th:if="${disabledUsers != null}">
-                        <h2>Disabled Users:</h2>
-                        <div class="container">
-                            <th:block th:each="dUser : ${disabledUsers}" th:insert="fragments/admin.html :: enableUserCard"></th:block>
-                        </div>
-                    </div>
+                <div class="tab-pane fade active in" id="adminpanel" role="tabpanel" aria-labelledby="admin-tab" sec:authorize="hasRole('ADMIN')">
+                    <th:block th:replace='fragments/admin_home.html :: adminTabContents'></th:block>
                 </div>
-                <div class="tab-pane fade" th:classappend="${#authorization.expression('hasRole(''ADMIN'')')?'':'active in'}" id="instructor" role="tabpanel" aria-labelledby="instructor-tab" >
-                    <h2>Your Courses:</h2>
-                    <div class="list-group">
-                        <div class="list-group-item">
-                            <a class="btn btn-primary" onclick="newCourse()">Add Course</a>
-                        </div>
-                        <div th:each="course : ${courseList}" class="list-group-item">
-                            <th:block th:text="${courseName}">course</th:block>
-                        </div>
-                    </div>
-                    
-                    <h2>Organizations:</h2>
-                    <div class="list-group">
-                        <p th:each="org : ${orgs}" class="list-group-item">
-                            <th:block th:text="${org.login}">org</th:block>
-                        </p>
-                    </div>
+                <div class="tab-pane fade" th:classappend="${#authorization.expression('hasRole(''ADMIN'')')?'':'active in'}" id="instructorpanel" role="tabpanel" aria-labelledby="instructor-tab" >
+                    <th:block th:replace='fragments/instructor_home.html :: instructorTabContents'></th:block>
                 </div>
             </div>
         </div>
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
         <script sec:authorize="hasRole('ADMIN')" src="/js/admin.js"></script>
+        <script sec:authorize="hasRole('ADMIN')" src="/js/instructor.js"></script>
     </body>
 </html>

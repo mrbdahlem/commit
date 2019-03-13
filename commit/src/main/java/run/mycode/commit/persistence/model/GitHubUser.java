@@ -53,12 +53,7 @@ public class GitHubUser implements OAuth2User, UserDetails, Serializable {
     @Column(name="roles")
     @EqualsAndHashCode.Exclude
     private String roleString;
-    
-    @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY)
-    @EqualsAndHashCode.Exclude 
-    private List<Course> courses;
-    
+        
     private String githubToken;
 
     @Override

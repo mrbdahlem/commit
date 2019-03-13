@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Instructor home section</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <th:block th:fragment='instructorTabContents'>
+            <h2>Your Courses:</h2>
+            <div class="list-group">
+                <div class="list-group-item courseItem">
+                    <form style='display: none; width: fit-content; vertical-align: middle;' 
+                          class='newCourseForm' action='/course/create' method='POST'
+                          onsubmit='return checkCourseCreate(this)'>
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <div class='input-group'>
+                            <input type='text' class='form-control' name='courseName' placeholder='Course Name'>
+                            <div class="input-group-btn">
+                                <input type='submit' class='btn btn-primary' style='display: none;' value='Add Course'>
+                            </div>
+                        </div>
+                    </form>
+                    <a class="btn btn-primary" onclick="newCourse(this)" style='vertical-align: middle;'>Add Course</a>
+                </div>
+                <div th:each="course : ${courseList}" class="list-group-item courseItem">
+                    <a th:href="|/courses/${course.key}" th:text="${course.name}">course</a>
+                </div>
+            </div>
+        </th:block>
+</body>
+</html>

@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 
 import javax.persistence.ManyToOne;
 
@@ -35,11 +36,23 @@ public class Course implements Serializable {
     
     private String sharedSecret;
 
-    @ManyToOne(cascade = CascadeType.ALL,
+    @ManyToOne(cascade = CascadeType.PERSIST,
                fetch = FetchType.LAZY)
+    @JoinColumn(name="owner_id", nullable=false)
     private GitHubUser owner;
 
+    /**
+     * Course name
+     */
     private String name;
 
-    private String githubOrganization;
+    /**
+     * Default GitHub Organization to find assignments
+     */
+    private String defaultAssignmentOrganization;
+    
+    /**
+     * GitHub Organization which will host student repositories
+     */
+    private String studentOrganization;
 }
