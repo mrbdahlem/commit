@@ -72,7 +72,6 @@ public class CourseController {
 
         if (((GitHubUser)auth.getPrincipal()).getId().equals(owner.getId()) && 
                 c.getKey().equals(formParams.getFirst("courseKey"))) {
-            System.out.println(formParams);
             view = new ModelAndView("redirect:./" + courseId + "/updated");
             
             if (formParams.getFirst("courseSecret") != null)
@@ -87,8 +86,7 @@ public class CourseController {
             if (formParams.getFirst("studentOrganization") != null)
                 c.setStudentOrganization(formParams.getFirst("studentOrganization"));
 
-            c = courseService.update(c);
-            System.out.println(c);
+            courseService.update(c);
         }
         else {
             view = new ModelAndView("error");
