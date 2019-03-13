@@ -23,4 +23,6 @@ public interface ICourseService {
     public Course getByKey(String key);
     
     public Set<Course> findByOwner(GitHubUser owner);
+    
+    public Course update(Course c);
 }

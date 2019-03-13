@@ -41,4 +41,9 @@ public class CourseService implements ICourseService {
     public Course getByKey(String key) {
         return courseRepo.findById(key).orElse(null);
     }
+
+    @Override
+    public Course update(Course c) {
+        return courseRepo.save(c);
+    }
 }
