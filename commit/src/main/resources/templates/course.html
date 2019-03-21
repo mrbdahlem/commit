@@ -23,16 +23,18 @@
                         name='courseName' style="font-size: 2em; height: auto;" 
                         placeholder='Course Name' th:value='${course.name}' />
                 </div>
-                <div class="form-group">
-                    <label for="courseKey">Consumer key:</label>
-                    <input type='text' class='form-control' name='courseKey'
-                        th:value='${course.key}' readonly />
-                </div>
-                <div class="form-group">
-                    <label for="courseSecret">Shared secret:</label>
-                    <input type='text' class='form-control' name='courseSecret' 
-                           th:value='${course.sharedSecret}' readonly />
-                </div>
+                <th:block th:if="${userIsOwner or #authorization.expression('hasRole(''ADMIN'')')}">
+                    <div class="form-group">
+                        <label for="courseKey">Consumer key:</label>
+                        <input type='text' class='form-control' name='courseKey'
+                            th:value='${course.key}' readonly />
+                    </div>
+                    <div class="form-group">
+                        <label for="courseSecret">Shared secret:</label>
+                        <input type='text' class='form-control' name='courseSecret' 
+                               th:value='${course.sharedSecret}' readonly />
+                    </div>
+                </th:block>
                 <div class="form-group">
                     <label for="courseOrganization">Default organization to copy assignments from:</label>
                     <select class='form-control' name='courseOrganization'>

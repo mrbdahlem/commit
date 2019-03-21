@@ -9,20 +9,25 @@
     <body>
         <div class="container" style="display: flex; justify-content: center; align-items: center;">
             <div class="col-sm well">
-                <div style="margin-bottom: 10px">                    
+                <div class="bg-danger" style="margin-bottom: 20px; padding: 2px 20px 10px; border-radius: 5px;">                    
                     <h2>
                         commit.mycode.run
                         <img src="/winkingmonkey.svg" alt="winking monkey" style="display: inline-block; height: 1.2em; vertical-align: bottom;">
                     </h2>
                 </div>
-                <h3 style="clear: both;" th:text="${message} ?: 'Error'">Error</h3>
+                
+                
+                <h1 th:text="${status}" style="display: inline"></h1>
+                <h3 th:text="${error}" style="display: inline"></h3>
+                
+                <p style="clear: both;" th:text="${message} ?: 'Error'">Error</p>
 
-                <a href="/" class="btn btn-primary">Go to dashboard.</a>
+                <a href="/" class="btn btn-primary pull-right">Go to dashboard.</a>
 
-                <p th:text="${status}"></p>
-                <p th:text="${error}"></p>
-                <p th:text="${exception}"></p>
-                <pre th:text="${trace}"/>
+                <th:block th:if="${exception != null}">
+                    <p th:text="${exception}"></p>
+                    <pre th:text="${trace}"/>
+                </th:block>
             </div>
         </div>
     </body>
