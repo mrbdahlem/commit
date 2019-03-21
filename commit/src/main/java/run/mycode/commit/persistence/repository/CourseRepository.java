@@ -16,7 +16,7 @@ import run.mycode.commit.persistence.model.GitHubUser;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, String> {
     @Modifying
-    @Query(value="INSERT INTO COURSE (id, name, owner_id, shared_secret) values (:key, :name, :ownerid, :secret)",
+    @Query(value="INSERT INTO course (id, name, owner_id, shared_secret) values (:key, :name, :ownerid, :secret)",
            nativeQuery = true)
     public void createCourse (@Param("key") String key, 
                               @Param("name") String name,
