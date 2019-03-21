@@ -128,11 +128,12 @@ public class CourseController {
             String cs = formParams.getFirst("courseSecret");
             if (cs != null && !cs.isEmpty()) {
                 try{
+                    // use the canonical uuid format for the updated shared secret
                     UUID uuid = UUID.fromString(cs);
-                    if (!c.getSharedSecret().equals(uuid.toString()))
-                        c.setSharedSecret(uuid.toString());
+                    c.setSharedSecret(uuid.toString());
                 } catch (IllegalArgumentException IGNORED){
                     // ignore the case where string is not valid UUID 
+                    
                 }
             }
             
@@ -148,7 +149,7 @@ public class CourseController {
             String sOrg = formParams.getFirst("studentOrganization"); 
             if (sOrg != null && !sOrg.isEmpty())
                 c.setStudentOrganization(sOrg);
-
+            
             courseService.update(c);
         }
         else {
