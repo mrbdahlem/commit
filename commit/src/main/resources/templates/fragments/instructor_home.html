@@ -17,14 +17,22 @@
                         <div class='input-group'>
                             <input type='text' class='form-control' name='courseName' placeholder='Course Name'>
                             <div class="input-group-btn">
-                                <input type='submit' class='btn btn-primary' style='display: none;' value='Add Course'>
+                                <input type='submit' class='btn btn-default' style='display: none;' value='Add Course'>
                             </div>
                         </div>
                     </form>
-                    <a class="btn btn-primary" onclick="newCourse(this)" style='vertical-align: middle;'>Add Course</a>
+                    <a class="btn btn-default" onclick="newCourse(this)" style='vertical-align: middle;'>Add Course</a>
                 </div>
                 <div th:each="course : ${courseList}" class="list-group-item courseItem">
-                    <a th:href="|/courses/${course.key}" th:text="${course.name}">course</a>
+                    <h4 style="display: inline; margin-right: 20px;" th:text="${course.name}"></h4>
+                    <div class='btn-group'>
+                        <a th:href="|/course/${course.key}" class='btn btn-default'>
+                            <span class='glyphicon glyphicon-list-alt'></span>&nbsp;Assignments
+                        </a>
+                        <a th:href="|/course/edit/${course.key}" class='btn btn-default'>
+                            <span class='glyphicon glyphicon-edit'></span>&nbsp;Edit course
+                        </a>
+                    </div>
                 </div>
             </div>
         </th:block>

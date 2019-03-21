@@ -28,7 +28,7 @@
                         <label for="courseKey">Consumer key:</label>
                         <div class="input-group">
                             <span class="input-group-btn">
-                                <button type="button" class="btn btn-secondary" onclick="copyInput(this)">
+                                <button type="button" class="btn btn-default" onclick="copyInput(this)">
                                     <span class="glyphicon glyphicon-copy"></span>
                                 </button>
                             </span>
@@ -40,14 +40,14 @@
                         <label for="courseSecret">Shared Secret:</label>
                         <div class="input-group">
                             <span class="input-group-btn">
-                                <button type="button" class="btn btn-secondary" onclick="copyInput(this)">
+                                <button type="button" class="btn btn-default" onclick="copyInput(this)">
                                     <span class="glyphicon glyphicon-copy"></span>
                                 </button>
                             </span>
                             <input type="text" class="form-control" name="courseSecret" 
                                    th:value="${course.sharedSecret}" readonly>
                             <span class="input-group-btn">
-                                <button type="button" class="btn btn-secondary" onclick="newSecret(this)">
+                                <button type="button" class="btn btn-default" onclick="newSecret(this)">
                                     <span class="glyphicon glyphicon-refresh"></span>&nbsp;Regenerate
                                 </button>
                             </span>

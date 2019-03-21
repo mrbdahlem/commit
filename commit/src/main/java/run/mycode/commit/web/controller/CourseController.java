@@ -61,7 +61,7 @@ public class CourseController {
      * @return a view to display the course
      */
     @Transactional
-    @GetMapping("/courses/{cid}")
+    @GetMapping("/course/edit/{cid}")
     public ModelAndView courseInfo(@PathVariable("cid") String courseId,
                                     Authentication auth) {
         ModelAndView view;
@@ -111,7 +111,7 @@ public class CourseController {
      * @return 
      */
     @Transactional
-    @PostMapping(value="/courses/{cid}", consumes=MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value="/course/edit/{cid}", consumes=MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ModelAndView editCourse(@PathVariable("cid") String courseId,
                                    @RequestBody MultiValueMap<String, String> formParams,
                                    Authentication auth) {
@@ -174,7 +174,7 @@ public class CourseController {
      * @param courseId the course that was updated
      * @return the informational view to display
      */
-    @GetMapping("/courses/{cid}/updated")
+    @GetMapping("/course/edit/{cid}/updated")
     public ModelAndView courseUpdatedMessage(@PathVariable("cid") String courseId) {
         ModelAndView view = new ModelAndView("courseUpdated");
         view.addObject("courseId", courseId);

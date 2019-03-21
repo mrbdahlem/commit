@@ -1,3 +1,11 @@
 #homeTabs {
     margin-top: 80px;
 }
+
+.list-group .courseItem:hover {
+    background-color: #ddd;
+}
+
+.list-group .courseItem a:hover {
+    text-decoration: none;
+}
