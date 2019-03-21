@@ -5,7 +5,7 @@ import java.util.UUID;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import run.mycode.commit.persistence.generator.Ulid;
+import run.mycode.commit.persistence.util.Ulid;
 import run.mycode.commit.persistence.model.Course;
 import run.mycode.commit.persistence.model.GitHubUser;
 import run.mycode.commit.persistence.repository.CourseRepository;

@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
+import run.mycode.commit.persistence.util.Identifiable;
 
 /**
  * The representation of a teacher's course connection between an LTI consumer
@@ -24,7 +25,7 @@ import lombok.Data;
  */
 @Data
 @Entity
-public class Course implements Serializable {
+public class Course implements Identifiable<String>, Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ulid")
     @GenericGenerator(
@@ -61,4 +62,9 @@ public class Course implements Serializable {
      */
     @Column(columnDefinition="tinyint(1) default 0")
     private boolean deleted;
+
+    @Override
+    public String getId() {
+        return getKey();
+    }
 }

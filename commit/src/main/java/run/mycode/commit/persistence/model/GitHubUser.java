@@ -17,6 +17,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import run.mycode.commit.persistence.util.Identifiable;
 
 /**
  * A web-login user of the commit program
@@ -26,7 +27,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 @Data
 @Entity
 @Table(name="user")
-public class GitHubUser implements OAuth2User, UserDetails, Serializable {
+public class GitHubUser implements OAuth2User, UserDetails, Identifiable<Long>, Serializable {
     @Transient
     @EqualsAndHashCode.Exclude
     private Map<String, Object> attributes;

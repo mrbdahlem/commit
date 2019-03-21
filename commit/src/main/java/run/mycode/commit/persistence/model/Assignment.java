@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
+import run.mycode.commit.persistence.util.Identifiable;
 
 /**
  * An Assignment representing a source repository allowing students to make their
@@ -21,7 +22,7 @@ import lombok.Data;
  */
 @Data
 @Entity
-public class Assignment implements Serializable {
+public class Assignment implements Identifiable<Long>, Serializable {
     /**
      * The database id for the assignment
      */
