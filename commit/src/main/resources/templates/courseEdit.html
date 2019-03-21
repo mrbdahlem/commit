@@ -72,6 +72,9 @@
                 </div>
                 <th:block th:if="${userIsOwner}">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type='button' onclick='deleteCourse()' class='btn btn-danger'>
+                        <span class="glyphicon glyphicon-trash"></span>&nbsp;Delete Course
+                    </button>
                     <button type="submit" action="" class="btn btn-primary pull-right">Update</button>
                     <a href="/" class="btn btn-secondary pull-right">Cancel</button>
                 </th:block>

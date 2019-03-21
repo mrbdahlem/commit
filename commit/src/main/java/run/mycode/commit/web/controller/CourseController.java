@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import run.mycode.commit.persistence.service.ICourseService;
 import run.mycode.commit.persistence.service.IGitHubUserService;
 import run.mycode.commit.service.GitHubService;
 import run.mycode.commit.web.util.ErrorView;
+import run.mycode.commit.web.util.MessageView;
 
 /**
  *
@@ -51,7 +53,7 @@ public class CourseController {
         Course newCourse = courseService.createCourse(courseName, owner);
         
         // Redirect the user's browser to display the new course
-        return "redirect:/courses/" + newCourse.getKey();
+        return "redirect:/course/" + newCourse.getKey() + "/edit";
     }
     
     /**
@@ -61,21 +63,15 @@ public class CourseController {
      * @return a view to display the course
      */
     @Transactional
-    @GetMapping("/course/edit/{cid}")
+    @GetMapping("/course/{cid}/edit")
     public ModelAndView courseInfo(@PathVariable("cid") String courseId,
                                     Authentication auth) {
-        ModelAndView view;
-        
-        
         // Lookup the course metadata based on the supplied id
         Course c = courseService.getByKey(courseId);
         
         // If there is no course with that id, display an error
         if (c == null) {
-            view = new ModelAndView("error");
-            view.setStatus(HttpStatus.NOT_FOUND);
-            view.addObject("error", "Course not found");
-            return view;
+            return new ErrorView(HttpStatus.NOT_FOUND, "Course not found");
         }
         
         GitHubUser user = (GitHubUser)auth.getPrincipal();
@@ -85,13 +81,12 @@ public class CourseController {
         // course
         if (!(user.getId().equals(owner.getId()) ||
               user.getRoleString().contains("ROLE_ADMIN"))) {
-            view = new ErrorView(HttpStatus.UNAUTHORIZED, 
+            return new ErrorView(HttpStatus.UNAUTHORIZED, 
                                  "You don't have permission to view this course.");
-            return view;        
         }
         
         // Otherwise, display the course's metadata
-        view = new ModelAndView("course");
+        ModelAndView view = new ModelAndView("courseEdit");
         view.addObject("course", c);
         
         // Add the user's accessible github organizations to allow updating
@@ -111,18 +106,28 @@ public class CourseController {
      * @return 
      */
     @Transactional
-    @PostMapping(value="/course/edit/{cid}", consumes=MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value="/course/{cid}/edit", consumes=MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ModelAndView editCourse(@PathVariable("cid") String courseId,
                                    @RequestBody MultiValueMap<String, String> formParams,
                                    Authentication auth) {
-        ModelAndView view;
+        
+        GitHubUser user = (GitHubUser)auth.getPrincipal();
         
         Course c = courseService.getByKey(courseId);
+        
+        // If there is no course with that id, display an error
+        if (c == null) {
+            return new ErrorView(HttpStatus.NOT_FOUND, "Course not found");
+        }
+        
         GitHubUser owner = c.getOwner();
 
-        if (((GitHubUser)auth.getPrincipal()).getId().equals(owner.getId()) && 
-                c.getKey().equals(formParams.getFirst("courseKey"))) {
-            view = new ModelAndView("redirect:./" + courseId + "/updated");
+        if (!user.getId().equals(owner.getId()) || 
+                !c.getKey().equals(formParams.getFirst("courseKey"))) {
+            return new ErrorView(HttpStatus.UNAUTHORIZED,
+                    "No authorization to update course");
+        }
+        else {
             
             // Only update the shared secret if it is present and a valid UUID
             String cs = formParams.getFirst("courseSecret");
@@ -132,8 +137,7 @@ public class CourseController {
                     UUID uuid = UUID.fromString(cs);
                     c.setSharedSecret(uuid.toString());
                 } catch (IllegalArgumentException IGNORED){
-                    // ignore the case where string is not valid UUID 
-                    
+                    // ignore the case where string is not valid UUID
                 }
             }
             
@@ -159,25 +163,44 @@ public class CourseController {
             }
             
             courseService.update(c);
-        }
-        else {
-            view = new ModelAndView("error");
-            view.addObject("message", "No authorization to update course");
-            view.setStatus(HttpStatus.UNAUTHORIZED);
+            
+            return new MessageView("Course Updated", "./edit");
         }
         
-        return view;
     }
     
     /**
-     * Display a message that the course was updated
-     * @param courseId the course that was updated
-     * @return the informational view to display
+     * Delete an lti course
+     * @param courseId the course to update
+     * @param auth 
+     * @return 
      */
-    @GetMapping("/course/edit/{cid}/updated")
-    public ModelAndView courseUpdatedMessage(@PathVariable("cid") String courseId) {
-        ModelAndView view = new ModelAndView("courseUpdated");
-        view.addObject("courseId", courseId);
-        return view;
+    @Transactional
+    @DeleteMapping(value="/course/{cid}")
+    public ModelAndView deleteCourse(@PathVariable("cid") String courseId,
+                                        Authentication auth) {
+        ModelAndView view;
+        
+        GitHubUser user = (GitHubUser)auth.getPrincipal();
+        
+        Course c = courseService.getByKey(courseId);
+        
+        // If there is no course with that id, display an error
+        if (c == null) {
+            return new ErrorView(HttpStatus.NOT_FOUND, "Course not found");
+        }
+        
+        GitHubUser owner = c.getOwner();
+
+        if (user.getId().equals(owner.getId())) {
+            c.setDeleted(true);
+            courseService.update(c);
+            
+            return new MessageView("Course Deleted", "/");
+        }
+        else {
+            return new ErrorView(HttpStatus.UNAUTHORIZED, 
+                                 "No authorization to delete course");
+        }
     }
 }

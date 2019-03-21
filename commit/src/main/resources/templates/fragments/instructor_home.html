@@ -26,10 +26,10 @@
                 <div th:each="course : ${courseList}" class="list-group-item courseItem">
                     <h4 style="display: inline; margin-right: 20px;" th:text="${course.name}"></h4>
                     <div class='btn-group'>
-                        <a th:href="|/course/${course.key}" class='btn btn-default'>
+                        <a th:href="|/course/${course.key}|" class='btn btn-default'>
                             <span class='glyphicon glyphicon-list-alt'></span>&nbsp;Assignments
                         </a>
-                        <a th:href="|/course/edit/${course.key}" class='btn btn-default'>
+                        <a th:href="|/course/${course.key}/edit|" class='btn btn-default'>
                             <span class='glyphicon glyphicon-edit'></span>&nbsp;Edit course
                         </a>
                     </div>

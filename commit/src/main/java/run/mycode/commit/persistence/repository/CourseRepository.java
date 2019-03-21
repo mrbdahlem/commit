@@ -24,4 +24,7 @@ public interface CourseRepository extends JpaRepository<Course, String> {
                               @Param("secret") String secret);
     
     public Set<Course> findByOwner(GitHubUser owner);
+    
+    @Query(value="SELECT c FROM Course c WHERE c.owner = :owner and c.deleted = 0")
+    public Set<Course> findByOwnerNotDeleted(@Param("owner") GitHubUser owner);
 }

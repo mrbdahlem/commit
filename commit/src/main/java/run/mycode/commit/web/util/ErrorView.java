@@ -1,15 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package run.mycode.commit.web.util;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- *
+ * A simple error message display view
+ * 
  * @author bdahl
  */
 public class ErrorView extends ModelAndView {

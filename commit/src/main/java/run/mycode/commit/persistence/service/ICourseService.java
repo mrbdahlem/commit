@@ -24,5 +24,7 @@ public interface ICourseService {
     
     public Set<Course> findByOwner(GitHubUser owner);
     
+    public Set<Course> findByOwnerNotDeleted(GitHubUser owner);
+    
     public Course update(Course c);
 }

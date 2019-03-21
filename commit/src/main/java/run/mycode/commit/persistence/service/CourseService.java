@@ -40,6 +40,11 @@ public class CourseService implements ICourseService {
     }
 
     @Override
+    public Set<Course> findByOwnerNotDeleted(GitHubUser owner) {
+        return courseRepo.findByOwnerNotDeleted(owner);
+    }
+
+    @Override
     public Course getByKey(String key) {
         return courseRepo.findById(key).orElse(null);
     }

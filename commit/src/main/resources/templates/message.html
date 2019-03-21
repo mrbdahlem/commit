@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>commit.mycode.run Course Updated</title>
+        <title>commit.mycode.run</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="refresh" th:content="|3;url='../${courseId}'|" />
+        <meta http-equiv="refresh" th:content="|3;url='${redir}'|" />
         <link rel="stylesheet"
               href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
         <link rel="stylesheet" href="/css/commitVweb.css" />
@@ -13,8 +13,8 @@
         <nav th:replace="fragments/ui.html :: navbar">commit.mycode.run</nav>
         
         <div class='container' style="margin-top: 80px;">
-            <h3>Course Updated</h3>
-            <a th:href="|../${courseId}|" class="btn btn-primary pull-right">OK</a>
+            <h3 th:text="${message}"></h3>
+            <a th:href="${redir}" class="btn btn-primary pull-right">OK</a>
         </div>
     </body>
 </html>

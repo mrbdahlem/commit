@@ -57,7 +57,8 @@ function generateUUID() { // Public Domain/MIT
  * @returns false
  */
 function newSecret(button) {
-    let doIt = confirm("This will replace your course's shared secret. You will need to update your LMS to use the new value.");
+    let doIt = confirm("This will replace your course's shared secret." +
+            " You will need to update your LMS to use the new value.");
 
     if (doIt) {
         button = $(button);
@@ -89,4 +90,25 @@ function copyInput(button) {
     document.execCommand("copy");
     
     return false;
+}
+
+function deleteCourse() {
+    let doIt = confirm("Do you really want to delete this course?");
+    
+    if (!doIt) {
+        return false;
+    }
+    
+    $.ajax({
+        url: './',
+        type: 'DELETE',
+        beforeSend: function(request) {
+            request.setRequestHeader($("meta[name='_csrf_header']").attr("content"),
+                                     $("meta[name='_csrf']").attr("content"));
+         }
+    }).done(() => {
+        window.location.href = '/';
+    }).fail((result) => {
+        alert("Could not delete the course: " + result.status + " " + result.statusText);
+    });
 }

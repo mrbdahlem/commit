@@ -55,4 +55,10 @@ public class Course implements Serializable {
      * GitHub Organization which will host student repositories
      */
     private String studentOrganization;
+    
+    /**
+     * Has this course been deleted?
+     */
+    @Column(columnDefinition="tinyint(1) default 0")
+    private boolean deleted;
 }

@@ -1,5 +1,7 @@
 package run.mycode.commit.web.controller;
 
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -7,10 +9,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import run.mycode.commit.persistence.model.Course;
 import run.mycode.commit.persistence.model.GitHubUser;
 import run.mycode.commit.persistence.service.ICourseService;
 import run.mycode.commit.persistence.service.IGitHubUserService;
-import run.mycode.commit.service.GitHubService;
 
 @Controller
 @Scope("session")
@@ -41,7 +43,8 @@ public class HomeController   {
             }
             
             if (user.getRoleString().contains("ROLE_INSTRUCTOR")) {
-                model.addAttribute("courseList", courseService.findByOwner(user));
+                Set<Course> courses = courseService.findByOwnerNotDeleted(user);
+                model.addAttribute("courseList", courses);
             }
         }
         
