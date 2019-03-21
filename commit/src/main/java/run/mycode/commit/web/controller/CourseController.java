@@ -143,12 +143,20 @@ public class CourseController {
                 c.setName(cn);
             
             String cOrg = formParams.getFirst("courseOrganization"); 
-            if (cOrg != null && !cOrg.isEmpty())
+            if (cOrg != null) {
+                if (cOrg.trim().isEmpty()) {
+                    cOrg = null;
+                }
                 c.setDefaultAssignmentOrganization(cOrg);
+            }
             
             String sOrg = formParams.getFirst("studentOrganization"); 
-            if (sOrg != null && !sOrg.isEmpty())
+            if (sOrg != null) {
+                if (sOrg.trim().isEmpty()) {
+                    sOrg = null;
+                }
                 c.setStudentOrganization(sOrg);
+            }
             
             courseService.update(c);
         }

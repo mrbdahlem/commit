@@ -16,11 +16,12 @@ import run.mycode.commit.persistence.model.GitHubUser;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, String> {
     @Modifying
-    @Query(value="INSERT INTO COURSE (id, name, owner_id) values (:key, :name, :ownerid)",
-           nativeQuery =true)
+    @Query(value="INSERT INTO COURSE (id, name, owner_id, shared_secret) values (:key, :name, :ownerid, :secret)",
+           nativeQuery = true)
     public void createCourse (@Param("key") String key, 
                               @Param("name") String name,
-                              @Param("ownerid") Long owner_id);
+                              @Param("ownerid") Long owner_id,
+                              @Param("secret") String secret);
     
     public Set<Course> findByOwner(GitHubUser owner);
 }

@@ -1,6 +1,7 @@
 package run.mycode.commit.persistence.service;
 
 import java.util.Set;
+import java.util.UUID;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,8 @@ public class CourseService implements ICourseService {
     @Override
     public Course createCourse(String name, GitHubUser owner) {
         String key = Ulid.generate();
-        courseRepo.createCourse(key, name, owner.getId());
+        String secret = UUID.randomUUID().toString();
+        courseRepo.createCourse(key, name, owner.getId(), secret);
         
         return courseRepo.findById(key).orElse(null);
     }

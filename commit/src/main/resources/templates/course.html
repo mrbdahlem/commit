@@ -57,6 +57,7 @@
                 <div class="form-group">
                     <label for="courseOrganization">Default organization to copy assignments from:</label>
                     <select class='form-control' name='courseOrganization'>
+                        <option value="" th:selected='${course.defaultAssignmentOrganization == null}'>None</option>
                         <option th:each="org : ${orgs}" th:text="${org.login}" th:value='${org.id}'
                                 th:selected='${course.defaultAssignmentOrganization} == ${org.id}'></option>
                     </select>
@@ -64,6 +65,7 @@
                 <div class="form-group">
                     <label for="studentOrganization">Organization to clone student copies into:</label>
                     <select class='form-control' name='studentOrganization'>
+                        <option value="" th:selected='${course.studentOrganization == null}'>None</option>
                         <option th:each="org : ${orgs}" th:value="${org.id}" th:text="${org.login}"  
                            th:selected='${course.studentOrganization} == ${org.id}'></option>
                     </select>
