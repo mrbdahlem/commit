@@ -35,6 +35,26 @@ function checkCourseCreate(form) {
     return true;
 }
 
+
+/**
+ * Validate creation of a new assignment -- that a name has been specified
+ * 
+ * @param {Element:form} form the form being submitted
+ * @returns {boolean} true if valid, false if not
+ */
+function checkAssignmentCreate(form) {
+    form = $(form);
+    let assignmentNameInput = $(form.find("[name='assignmentName']"));
+    
+    if (!assignmentNameInput.val()) {
+        alert("Assignments need to have a name.");
+        assignmentNameInput.addClass('has-error');
+        return false;
+    }
+    
+    return true;
+}
+
 /**
  * Create a random v4 UUID 
  * @returns {String} the UUID

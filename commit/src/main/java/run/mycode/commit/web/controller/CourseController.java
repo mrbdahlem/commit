@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import run.mycode.commit.persistence.model.Course;
 import run.mycode.commit.persistence.model.GitHubUser;
+import run.mycode.commit.persistence.service.IAssignmentService;
 import run.mycode.commit.persistence.service.ICourseService;
 import run.mycode.commit.persistence.service.IGitHubUserService;
 import run.mycode.commit.service.GitHubService;
@@ -40,10 +41,13 @@ public class CourseController {
     private ICourseService courseService;
     
     @Autowired
+    private IAssignmentService assignmentService;
+    
+    @Autowired
     private GitHubService gitHubService;
     
     @Autowired
-    IGitHubUserService userService;
+    private IGitHubUserService userService;
     
     /**
      * Allow a user to create a new lti course
@@ -105,7 +109,6 @@ public class CourseController {
         catch (IOException IGNORED) {};
         
         view.addObject("userIsOwner", user.getId().equals(owner.getId()));
-        view.setStatus(HttpStatus.OK);
         
         return view;
     }
@@ -193,8 +196,6 @@ public class CourseController {
     @DeleteMapping(value="/course/{cid}")
     public ModelAndView deleteCourse(@PathVariable("cid") String courseId,
                                         Authentication auth) {
-        ModelAndView view;
-        
         GitHubUser user = (GitHubUser)auth.getPrincipal();
         
         Course c = courseService.getByKey(courseId);
@@ -218,5 +219,40 @@ public class CourseController {
             return new ErrorView(HttpStatus.UNAUTHORIZED, 
                                  "No authorization to delete course");
         }
+    }
+    
+    @Transactional
+    @GetMapping(value="/course/{cid}")
+    public ModelAndView courseAssignments(@PathVariable("cid") String courseId,
+                                        Authentication auth) {
+                GitHubUser user = (GitHubUser)auth.getPrincipal();
+        
+        Course c = courseService.getByKey(courseId);
+        
+        // If there is no course with that id, display an error
+        if (c == null) {
+            return new ErrorView(HttpStatus.NOT_FOUND, "Course not found");
+        }
+        
+        GitHubUser owner = c.getOwner();
+
+        // If the user is not the course owner or an admin, don't display the
+        // course
+        if (!(user.getId().equals(owner.getId()) ||
+              user.getRoleString().contains("ROLE_ADMIN"))) {
+            return new ErrorView(HttpStatus.UNAUTHORIZED, 
+                                 "You don't have permission to view this course.");
+        }
+        
+        // Otherwise, display the course's metadata
+        ModelAndView view = new ModelAndView("courseAssignments");
+        view.addObject("course", c);
+        
+        // Add the course's assignment list
+        view.addObject("assignments", assignmentService.findByCourse(c));
+        
+        view.addObject("userIsOwner", user.getId().equals(owner.getId()));
+        
+        return view;
     }
 }

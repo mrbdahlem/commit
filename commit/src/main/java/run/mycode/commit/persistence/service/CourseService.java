@@ -19,10 +19,7 @@ import run.mycode.commit.persistence.repository.GitHubUserRepository;
 @Service
 public class CourseService implements ICourseService {
     @Autowired
-    CourseRepository courseRepo;
-    
-    @Autowired
-    GitHubUserRepository userRepo;
+    private CourseRepository courseRepo;
     
     @Transactional
     @Override
