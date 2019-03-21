@@ -1,8 +1,10 @@
 package run.mycode.commit.web.controller;
 
+import java.io.IOException;
 import java.util.UUID;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -28,6 +30,7 @@ import run.mycode.commit.web.util.MessageView;
  * @author bdahl
  */
 @Controller
+@Scope(value="session")
 public class CourseController {
     @Autowired
     private ICourseService courseService;
@@ -90,7 +93,10 @@ public class CourseController {
         view.addObject("course", c);
         
         // Add the user's accessible github organizations to allow updating
-        view.addObject("orgs", gitHubService.getOrgs(owner));
+        try {
+            view.addObject("orgs", gitHubService.getOrgs());
+        }
+        catch (IOException IGNORED) {};
         
         view.addObject("userIsOwner", user.getId().equals(owner.getId()));
         view.setStatus(HttpStatus.OK);

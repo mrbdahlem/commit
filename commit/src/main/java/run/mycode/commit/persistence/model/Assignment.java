@@ -34,7 +34,6 @@ public class Assignment implements Identifiable<Long>, Serializable {
     /**
      * The display name for the assignment
      */
-    @NotNull
     private String name;
     
     /**

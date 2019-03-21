@@ -1,5 +1,6 @@
 package run.mycode.commit.persistence.model;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import javax.persistence.Table;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.kohsuke.github.GHUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,10 +30,6 @@ import run.mycode.commit.persistence.util.Identifiable;
 @Entity
 @Table(name="user")
 public class GitHubUser implements OAuth2User, UserDetails, Identifiable<Long>, Serializable {
-    @Transient
-    @EqualsAndHashCode.Exclude
-    private Map<String, Object> attributes;
-    
     @Id
     @Column(unique=true)
     private Long id;        // User id comes from github
@@ -60,42 +58,26 @@ public class GitHubUser implements OAuth2User, UserDetails, Identifiable<Long>, 
 
     @Override
     public Map<String, Object> getAttributes() {
-        if (this.attributes == null) {
-                this.attributes = new HashMap<>();
-                this.attributes.put("id", this.getId());
-                this.attributes.put("name", this.getName());
-                this.attributes.put("login", this.getGithubUsername());
-                this.attributes.put("email", this.getEmail());
-                this.attributes.put("enabled", this.enabled);
-        }
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("id", this.getId());
+        attributes.put("name", this.getName());
+        attributes.put("login", this.getGithubUsername());
+        attributes.put("email", this.getEmail());
+        
         return attributes;
     }
     
     /**
      * Copy data into the user
-     * @param attributes 
+     * @param other the user data to merge into this user
+     * @throws java.io.IOException if downloading the other user's info cannot be
+     *                             completed
      */
-    public void setAttributes(Map<String, Object> attributes) {
-        if (this.attributes == null) {
-            this.attributes = new HashMap<>();
-        }
-        
-        this.attributes.putAll(attributes);
-        
-        if (attributes.containsKey("id"))
-            this.id = ((Number)attributes.get("id")).longValue();
-
-        if (attributes.containsKey("name"))
-            this.name = (String)attributes.get("name");
-        
-        if (attributes.containsKey("login"))
-            this.githubUsername = (String)attributes.get("login");
-        
-        if (attributes.containsKey("email"))
-            this.email = (String)attributes.get("email");
-        
-        if (attributes.get("enabled") != null)
-            this.enabled = (Boolean)attributes.get("enabled");
+    public void merge(GHUser other) throws IOException {
+        this.id = other.getId();
+        this.name = other.getName();
+        this.githubUsername = other.getLogin();
+        this.email = other.getEmail();
     }
     
     public void setLogin(String name) {

@@ -1,9 +1,15 @@
 package run.mycode.commit.persistence.service;
 
+import java.io.IOException;
 import java.util.List;
+import org.kohsuke.github.GHUser;
+import org.kohsuke.github.GitHub;
+import org.kohsuke.github.GitHubBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import run.mycode.commit.persistence.repository.GitHubUserRepository;
@@ -20,12 +26,9 @@ public class GitHubUserService implements IGitHubUserService {
     
     @Autowired
     GitHubUserRepository userRepo;
-    
-    @Autowired
-    GitHubService githubService;
-    
+        
     /**
-     * Load and update the registered user from the authenticated user
+     * Load and update the registered user from the github authenticated user
      * 
      * @param req
      * @return A registered user
@@ -35,30 +38,37 @@ public class GitHubUserService implements IGitHubUserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest req) 
             throws OAuth2AuthenticationException {
+                
+        try {
+            GHUser authUser = downloadUserInfo(req.getAccessToken());
         
-        GitHubUser authUser = githubService.downloadUserInfo(req.getAccessToken());
-        
-        // Load the corresponding registered user (if present)
-        GitHubUser regUser = userRepo.findById(authUser.getId()).orElse(null);
+            // Load the corresponding registered user (if present)
+            GitHubUser regUser = userRepo.findById(authUser.getId()).orElse(new GitHubUser());
 
-        // If the registered user is not the same as the authenticated user
-        if (!authUser.equals(regUser)) {
             // Update the registered user with the authenticated information
-            if (regUser != null) {
-                regUser.setAttributes(authUser.getAttributes());
-                regUser.setGithubToken(authUser.getGithubToken());
-            }
-            else {
-                regUser = authUser;
-            }
-
-            // Add the user to the repo
+            regUser.merge(authUser);
+            regUser.setGithubToken(req.getAccessToken().getTokenValue());
+            
+            // Update the user repo with the user's information
             regUser = userRepo.save(regUser);
-        }            
 
-        return regUser;
+            return regUser;
+        }
+        catch (IOException e) {
+            throw new OAuth2AuthenticationException(new OAuth2Error("IO Error", e.getLocalizedMessage(), null));
+        }
     }   
 
+    private GHUser downloadUserInfo(OAuth2AccessToken token)
+            throws IOException {
+        GitHub gitHub = new GitHubBuilder()
+                .withOAuthToken(token.getTokenValue())
+                .withConnector(GitHubService.getConnector())
+                .build();
+                
+        return gitHub.getMyself();
+    }
+    
     /**
      * Get a list of all disabled users
      * 

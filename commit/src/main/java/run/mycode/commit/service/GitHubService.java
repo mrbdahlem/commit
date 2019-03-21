@@ -1,15 +1,20 @@
 package run.mycode.commit.service;
 
-import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import java.io.File;
+import java.io.IOException;
+import java.util.Set;
+import okhttp3.Cache;
+import okhttp3.OkHttpClient;
+import okhttp3.OkUrlFactory;
+import org.kohsuke.github.GHMyself;
+import org.kohsuke.github.GHOrganization;
+import org.kohsuke.github.GitHub;
+import org.kohsuke.github.GitHubBuilder;
+import org.kohsuke.github.HttpConnector;
+import org.kohsuke.github.extras.OkHttp3Connector;
+import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import run.mycode.commit.persistence.model.GitHubUser;
 
 /**
@@ -18,33 +23,57 @@ import run.mycode.commit.persistence.model.GitHubUser;
  * @author bdahl
  */
 @Service
-public class GitHubService extends GitHubGraphQLService {
+@Scope(value="session")
+public class GitHubService {
+    private static final HttpConnector httpConnector = makeConnector();
     
-    @Autowired
-    private ClientRegistrationRepository clientRegRepo;
-
-    public GitHubUser downloadUserInfo(OAuth2AccessToken token) {
-
-        String userInfoEndpointUri = clientRegRepo.findByRegistrationId("github")
-                .getProviderDetails()
-                .getUserInfoEndpoint()
-                .getUri();
-
-        // Request the GitHub user information
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + token.getTokenValue());
-
-        HttpEntity<String> entity = new HttpEntity<>("", headers);
-
-        ResponseEntity<Map> response = restTemplate.exchange(userInfoEndpointUri, HttpMethod.GET, entity, Map.class);
-        Map userAttributes = response.getBody();
-
-        // Create a user with the loaded information
-        GitHubUser authUser = new GitHubUser();
-        authUser.setAttributes(userAttributes);
-        authUser.setGithubToken(token.getTokenValue());
-
-        return authUser;
+    private final GitHub github;
+    private final GHMyself user;
+    
+    /**
+     * Create a GitHubService for use by the current user
+     * @throws IOException 
+     */
+    public GitHubService() throws IOException {
+        GitHubUser usr = (GitHubUser)SecurityContextHolder.getContext()
+                                                          .getAuthentication()
+                                                          .getPrincipal();
+        
+        github = new GitHubBuilder()
+                .withOAuthToken(usr.getGithubToken())
+                .withConnector(GitHubService.getConnector())
+                .build();
+        
+        user = github.getMyself();
+    }
+    
+    public static HttpConnector getConnector() {
+        return httpConnector;
+    }
+    
+    private static HttpConnector makeConnector() {
+        File cacheDirectory = new File(System.getProperty("java.io.tmpdir"));
+        
+        System.out.println("Caching to: " + cacheDirectory.getAbsolutePath());
+        
+        Cache cache = new Cache(cacheDirectory, 10 * 1024 * 1024); // 10MB cache
+        
+        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
+        clientBuilder.cache(cache);
+        
+        OkHttp3Connector ok3hc = new OkHttp3Connector(new OkUrlFactory(clientBuilder.build()));
+        
+        return (HttpConnector)ok3hc;
+    }
+    
+    /**
+     * Get a list of all GitHub organizations associated with the logged in user
+     * 
+     * @return The list of organizations accessible to the user
+     * 
+     * @throws IOException 
+     */
+    public Set<GHOrganization> getOrgs() throws IOException {
+        return user.getAllOrganizations();
     }
 }

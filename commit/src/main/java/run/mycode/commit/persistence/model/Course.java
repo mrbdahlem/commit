@@ -30,7 +30,7 @@ public class Course implements Identifiable<String>, Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ulid")
     @GenericGenerator(
         name = "ulid", 
-        strategy = "run.mycode.commit.persistence.generator.UlidGenerator"
+        strategy = "run.mycode.commit.persistence.util.UlidGenerator"
         )
     @Column(name = "id", length=26)
     private String key;
