@@ -7,6 +7,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ResolvableType;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +17,7 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import run.mycode.commit.persistence.model.GitHubUser;
 
 /**
  * Handle login requests
@@ -23,7 +26,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 @Controller
 public class LoginController {
-
+    private static final Logger LOG = LoggerFactory.getLogger(LoginController.class);
     private static final String authorizationRequestBaseUri = "oauth2/authorize-client";
     
     @Autowired
@@ -53,7 +56,8 @@ public class LoginController {
     
     
     @GetMapping(value = {"/logout.html"})
-    public String doLogout(Model model, HttpServletRequest request, HttpServletResponse response) {
+    public String doLogout(Model model, HttpServletRequest request, HttpServletResponse response, final Principal principal) {
+        LOG.info(principal.getName() + " logging out.");
         
         SecurityContextHolder.clearContext();
         

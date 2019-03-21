@@ -12,6 +12,8 @@ import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
 import org.kohsuke.github.HttpConnector;
 import org.kohsuke.github.extras.OkHttp3Connector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ import run.mycode.commit.persistence.model.GitHubUser;
 @Service
 @Scope(value="session")
 public class GitHubService {
+    private static final Logger LOG = LoggerFactory.getLogger(GitHubService.class);
     private static final HttpConnector httpConnector = makeConnector();
     
     private final GitHub github;
@@ -54,7 +57,7 @@ public class GitHubService {
     private static HttpConnector makeConnector() {
         File cacheDirectory = new File(System.getProperty("java.io.tmpdir"));
         
-        System.out.println("Caching to: " + cacheDirectory.getAbsolutePath());
+        LOG.info("Caching github requests to: " + cacheDirectory.getAbsolutePath());
         
         Cache cache = new Cache(cacheDirectory, 10 * 1024 * 1024); // 10MB cache
         

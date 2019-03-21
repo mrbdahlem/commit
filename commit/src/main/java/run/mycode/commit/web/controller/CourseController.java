@@ -3,6 +3,8 @@ package run.mycode.commit.web.controller;
 import java.io.IOException;
 import java.util.UUID;
 import javax.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
@@ -32,6 +34,8 @@ import run.mycode.commit.web.util.MessageView;
 @Controller
 @Scope(value="session")
 public class CourseController {
+    private static final Logger LOG = LoggerFactory.getLogger(CourseController.class);
+    
     @Autowired
     private ICourseService courseService;
     
@@ -54,6 +58,8 @@ public class CourseController {
         // Create the course with the current user as its owner
         GitHubUser owner = (GitHubUser)auth.getPrincipal();
         Course newCourse = courseService.createCourse(courseName, owner);
+        
+        LOG.debug("Course " + courseName + " created for " + owner.getLogin());
         
         // Redirect the user's browser to display the new course
         return "redirect:/course/" + newCourse.getKey() + "/edit";
@@ -170,6 +176,8 @@ public class CourseController {
             
             courseService.update(c);
             
+            LOG.debug("Course " + c.getName() + " updated for " + owner.getLogin());
+            
             return new MessageView("Course Updated", "./edit");
         }
         
@@ -201,6 +209,8 @@ public class CourseController {
         if (user.getId().equals(owner.getId())) {
             c.setDeleted(true);
             courseService.update(c);
+            
+            LOG.debug("Course " + c.getName() + " deleted for " + owner.getLogin());
             
             return new MessageView("Course Deleted", "/");
         }

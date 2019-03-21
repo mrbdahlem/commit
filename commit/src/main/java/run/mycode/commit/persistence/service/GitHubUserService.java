@@ -5,6 +5,8 @@ import java.util.List;
 import org.kohsuke.github.GHUser;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
@@ -23,7 +25,8 @@ import run.mycode.commit.service.GitHubService;
  */
 @Service
 public class GitHubUserService implements IGitHubUserService {
-    
+    private static final Logger LOG = LoggerFactory.getLogger(GitHubUserService.class);
+
     @Autowired
     GitHubUserRepository userRepo;
         
@@ -51,6 +54,8 @@ public class GitHubUserService implements IGitHubUserService {
             
             // Update the user repo with the user's information
             regUser = userRepo.save(regUser);
+            
+            LOG.info(regUser.getLogin() + " logged in.");
 
             return regUser;
         }
@@ -78,16 +83,6 @@ public class GitHubUserService implements IGitHubUserService {
     public List<GitHubUser> findDisabled() {
         return userRepo.findByEnabled(false);
     }
-    
-    /**
-     * Activate a user account
-     * 
-     * @param user the user to activate
-     */
-    public void enableUser(GitHubUser user) {
-        user.setEnabled(true);
-        userRepo.save(user);
-    }
 
     @Override
     public boolean deleteUser(String username) {
@@ -97,6 +92,8 @@ public class GitHubUserService implements IGitHubUserService {
         }
         
         userRepo.delete(user);
+        
+        LOG.info(username + " deleted.");
         return true;
     }
 
@@ -113,7 +110,10 @@ public class GitHubUserService implements IGitHubUserService {
         }
         
         user.setEnabled(true);
-        userRepo.save(user);
+        userRepo.save(user);        
+        
+        LOG.info(username + " enabled.");
+        
         return true;
     }
 
