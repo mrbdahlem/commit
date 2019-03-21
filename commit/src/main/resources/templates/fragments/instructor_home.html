@@ -9,9 +9,9 @@
         <th:block th:fragment='instructorTabContents'>
             <h2>Your Courses:</h2>
             <div class="list-group">
-                <div class="list-group-item courseItem">
+                <div class="list-group-item courseItem newItem">
                     <form style='display: none; width: fit-content; vertical-align: middle;' 
-                          class='newCourseForm' action='/course/create' method='POST'
+                          class='newCourseForm newItemForm' action='/course/create' method='POST'
                           onsubmit='return checkCourseCreate(this)'>
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                         <div class='input-group'>
@@ -21,7 +21,7 @@
                             </div>
                         </div>
                     </form>
-                    <a class="btn btn-default" onclick="newCourse(this)" style='vertical-align: middle;'>Add Course</a>
+                    <a class="btn btn-default" onclick="newNamedItem(this)" style='vertical-align: middle;'>Add Course</a>
                 </div>
                 <div th:each="course : ${courseList}" class="list-group-item courseItem">
                     <h4 style="display: inline; margin-right: 20px;" th:text="${course.name}"></h4>

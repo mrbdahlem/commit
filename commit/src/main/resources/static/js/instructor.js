@@ -1,13 +1,13 @@
 /**
- * Show the course creation form and hide the activation button
+ * Show the item creation form and hide the activation button
  * 
  * @param {element} button the button that activates the form display
  */
-function newCourse(button) {
+function newNamedItem(button) {
     // find the container for the button and the form
     button = $(button);
-    let itemContainer = button.closest('.courseItem');
-    let form = $(itemContainer.find('.newCourseForm'));
+    let itemContainer = button.closest('.newItem');
+    let form = $(itemContainer.find('.newItemForm'));
     
     // Show the form, then replace the activation button with the submit button
     form.show(500, "linear", () => {
