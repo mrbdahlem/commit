@@ -9,7 +9,6 @@ import run.mycode.commit.persistence.util.Ulid;
 import run.mycode.commit.persistence.model.Course;
 import run.mycode.commit.persistence.model.GitHubUser;
 import run.mycode.commit.persistence.repository.CourseRepository;
-import run.mycode.commit.persistence.repository.GitHubUserRepository;
 
 /**
  * A service for creating and accessing courses to interact with GitHub

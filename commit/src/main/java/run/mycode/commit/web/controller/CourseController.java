@@ -46,9 +46,6 @@ public class CourseController {
     @Autowired
     private GitHubService gitHubService;
     
-    @Autowired
-    private IGitHubUserService userService;
-    
     /**
      * Allow a user to create a new lti course
      * @param courseName The name of the course to create
@@ -249,7 +246,7 @@ public class CourseController {
         view.addObject("course", c);
         
         // Add the course's assignment list
-        view.addObject("assignments", assignmentService.findByCourse(c));
+        view.addObject("assignmentList", assignmentService.findByCourse(c));
         
         view.addObject("userIsOwner", user.getId().equals(owner.getId()));
         

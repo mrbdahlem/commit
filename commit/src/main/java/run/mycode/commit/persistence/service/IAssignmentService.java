@@ -12,6 +12,8 @@ import run.mycode.commit.persistence.model.GitHubUser;
 public interface IAssignmentService {
     public Assignment createAssignment(String name, GitHubUser owner, Course course);
     
+    public Assignment findById(Long id);
+    
     public Set<Assignment> findByCourse(Course course);
     
     public Set<Assignment> findByOwner(GitHubUser owner);

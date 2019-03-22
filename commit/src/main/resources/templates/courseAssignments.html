@@ -26,6 +26,7 @@
                               class='newCourseForm newItemForm' action='/assignment/create' method='POST'
                               onsubmit='return checkAssignmentCreate(this)'>
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                            <input type="hidden" name="courseKey" th:value="${course.key}"/>
                             <div class='input-group'>
                                 <input type='text' class='form-control' name='assignmentName' placeholder='Assignment Name'>
                                 <div class="input-group-btn">
@@ -35,11 +36,9 @@
                         </form>
                         <a class="btn btn-default" onclick="newNamedItem(this)" style='vertical-align: middle;'>New Assignment</a>
                     </div>
-                    <div th:each="assignment : ${assignmentList}" class="list-group-item assignmentItem">
-                        <a th:href="|/assignment/${assignment.id}/edit|" class='btn btn-default'>
-                            <h4 style="display: inline; margin-right: 20px;" th:text="${assignment.name}"></h4>
-                        </a>
-                    </div>
+                    <a th:each="assignment : ${assignmentList}" class="list-group-item assignmentItem" th:href="|/assignment/${assignment.id}/edit|">
+                        <h4 style="display: inline; margin-right: 20px;" th:text="${assignment.name}"></h4>
+                    </a>
                 </div>
             </div>
             <div th:if="${course == null}" class="container">

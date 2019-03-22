@@ -27,7 +27,7 @@ public class Assignment implements Identifiable<Long>, Serializable {
      */
     @Id
     @Column(unique = true, nullable = false)
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
     
     /**
@@ -39,16 +39,16 @@ public class Assignment implements Identifiable<Long>, Serializable {
      * The owner (instructor) of this assignment
      */
     @ManyToOne(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY)
-    @JoinColumn(name="owner_id", nullable=false)
+            fetch = FetchType.EAGER)
+    @JoinColumn(name="owner_id")
     private GitHubUser owner;
     
     /**
      * The course this assignment was created for
      */
     @ManyToOne(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY)
-    @JoinColumn(name="course_id", nullable=false)
+            fetch = FetchType.EAGER)
+    @JoinColumn(name="course_id")
     private Course course;
     
     /**

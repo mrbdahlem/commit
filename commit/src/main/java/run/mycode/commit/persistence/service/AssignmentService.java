@@ -14,17 +14,11 @@ public class AssignmentService implements IAssignmentService {
     @Autowired
     private AssignmentRepository assignmentRepo;
     
-    @Transactional
     @Override
-    public Assignment createAssignment(String name, GitHubUser owner, Course course) {
-        Assignment a = new Assignment();
-        a.setName(name);
-        a.setOwner(owner);
-        a.setCourse(course);
-        
-        return assignmentRepo.save(a);
+    public Assignment findById(Long id) {
+        return assignmentRepo.findById(id).orElse(null);
     }
-
+    
     @Override
     public Set<Assignment> findByCourse(Course course) {
         return assignmentRepo.findByCourse(course);
@@ -40,4 +34,17 @@ public class AssignmentService implements IAssignmentService {
     public Assignment update(Assignment a) {
         return assignmentRepo.save(a);
     }
+
+    @Transactional
+    @Override
+    public Assignment createAssignment(String name, GitHubUser owner, Course course) {
+        Assignment a = new Assignment();
+        a.setName(name);
+        a = assignmentRepo.save(a);
+        
+        assignmentRepo.setOwnerCourse(a.getId(), owner.getId(), course.getKey());
+    
+        return assignmentRepo.findById(a.getId()).orElse(null);
+    }
+
 }

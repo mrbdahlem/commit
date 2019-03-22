@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title th:text='|commit.mycode.run ${course != null and course.name != null ? course.name : "Course"}|'>commit.mycode.run Course</title>
+        <th:block th:if="${userIsOwner}">
+            <meta name="_csrf" th:content="${_csrf.token}"/>
+            <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+        </th:block>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet"
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/css/commitVweb.css" />
+    </head>
+    <body>
+        <nav th:replace="fragments/ui.html :: navbar">commit.mycode.run</nav>
+        
+        <div class='container' style="margin-top: 80px;" th:with="user=${#authentication.getPrincipal()}">
+            <th:block th:text="${assignment.id}"></th:block>
+            <th:block th:text="${assignment.name}"></th:block>
+            <th:block th:text="${owner.name}"></th:block>
+            <th:block th:text="${course.name}"></th:block>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <script sec:authorize="hasRole('ADMIN')" src="/js/admin.js"></script>
+        <script sec:authorize="hasRole('INSTRUCTOR')" src="/js/instructor.js"></script>
+    </body>
+</html>
