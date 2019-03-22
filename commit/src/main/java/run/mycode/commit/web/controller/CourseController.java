@@ -23,7 +23,7 @@ import run.mycode.commit.persistence.model.Course;
 import run.mycode.commit.persistence.model.GitHubUser;
 import run.mycode.commit.persistence.service.IAssignmentService;
 import run.mycode.commit.persistence.service.ICourseService;
-import run.mycode.commit.persistence.service.IGitHubUserService;
+import run.mycode.commit.persistence.service.IOrgNameService;
 import run.mycode.commit.service.GitHubService;
 import run.mycode.commit.web.util.ErrorView;
 import run.mycode.commit.web.util.MessageView;
@@ -45,6 +45,9 @@ public class CourseController {
     
     @Autowired
     private GitHubService gitHubService;
+    
+    @Autowired
+    private IOrgNameService orgNameService;
     
     /**
      * Allow a user to create a new lti course
@@ -161,17 +164,21 @@ public class CourseController {
             String cOrg = formParams.getFirst("courseOrganization"); 
             if (cOrg != null) {
                 if (cOrg.trim().isEmpty()) {
-                    cOrg = null;
+                    c.setDefaultAssignmentOrganization(null);
                 }
-                c.setDefaultAssignmentOrganization(cOrg);
+                else {
+                    c.setDefaultAssignmentOrganization(orgNameService.getOrg(Long.parseLong(cOrg)));
+                }
             }
             
             String sOrg = formParams.getFirst("studentOrganization"); 
             if (sOrg != null) {
                 if (sOrg.trim().isEmpty()) {
-                    sOrg = null;
+                    c.setStudentOrganization(null);
                 }
-                c.setStudentOrganization(sOrg);
+                else {
+                    c.setStudentOrganization(orgNameService.getOrg(Long.parseLong(sOrg)));
+                }
             }
             
             courseService.update(c);
@@ -222,7 +229,7 @@ public class CourseController {
     @GetMapping(value="/course/{cid}")
     public ModelAndView courseAssignments(@PathVariable("cid") String courseId,
                                         Authentication auth) {
-                GitHubUser user = (GitHubUser)auth.getPrincipal();
+        GitHubUser user = (GitHubUser)auth.getPrincipal();
         
         Course c = courseService.getByKey(courseId);
         

@@ -14,10 +14,12 @@ import org.kohsuke.github.HttpConnector;
 import org.kohsuke.github.extras.OkHttp3Connector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import run.mycode.commit.persistence.model.GitHubUser;
+import run.mycode.commit.persistence.service.IOrgNameService;
 
 /**
  * A combined library of REST and GraphQL services provided by GitHub.
@@ -32,6 +34,9 @@ public class GitHubService {
     
     private final GitHub github;
     private final GHMyself user;
+    
+    @Autowired
+    private IOrgNameService orgNameService;
     
     /**
      * Create a GitHubService for use by the current user
@@ -71,12 +76,15 @@ public class GitHubService {
     
     /**
      * Get a list of all GitHub organizations associated with the logged in user
+     * and update the stored names for those organizations
      * 
      * @return The list of organizations accessible to the user
      * 
      * @throws IOException 
      */
     public Set<GHOrganization> getOrgs() throws IOException {
-        return user.getAllOrganizations();
+        Set<GHOrganization> orgs = user.getAllOrganizations();
+        orgNameService.updateAll(orgs);
+        return orgs;
     }
 }

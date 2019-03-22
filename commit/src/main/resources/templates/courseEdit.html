@@ -15,10 +15,10 @@
     <body>
         <nav th:replace="fragments/ui.html :: navbar">commit.mycode.run</nav>
         
-        <div class='container' style="margin-top: 80px;" th:with="user=${#authentication.getPrincipal()}">
+        <div class='container' style="margin-top: 80px;">
             <form th:if="${course != null}" method="POST">
                 <div class="form-group">    
-                    <label for="courseName"><h2>Edit course:</h2></label>
+                    <label for="courseName"><h2>Course Properties</h2></label>
                     <input type='text' class='form-control form-control-lg'
                         name='courseName' style="font-size: 2em; height: auto;" 
                         placeholder='Course Name' th:value='${course.name}' />
@@ -58,16 +58,16 @@
                     <label for="courseOrganization">Default organization to copy assignments from:</label>
                     <select class='form-control' name='courseOrganization'>
                         <option value="" th:selected='${course.defaultAssignmentOrganization == null}'>None</option>
-                        <option th:each="org : ${orgs}" th:text="${org.login}" th:value='${org.id}'
-                                th:selected='${course.defaultAssignmentOrganization} == ${org.id}'></option>
+                        <option th:each="org : ${orgs}" th:value='${org.id}' th:text="${org.name ?: org.login}"
+                                th:selected='${course.defaultAssignmentOrganization} != null and ${course.defaultAssignmentOrganization.id} == ${org.id}'></option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="studentOrganization">Organization to clone student copies into:</label>
                     <select class='form-control' name='studentOrganization'>
                         <option value="" th:selected='${course.studentOrganization == null}'>None</option>
-                        <option th:each="org : ${orgs}" th:value="${org.id}" th:text="${org.login}"  
-                           th:selected='${course.studentOrganization} == ${org.id}'></option>
+                        <option th:each="org : ${orgs}" th:value="${org.id}" th:text="${org.name ?: org.login}"  
+                           th:selected='${course.studentOrganization} != null and ${course.studentOrganization.id} == ${org.id}'></option>
                     </select>
                 </div>
                 <th:block th:if="${userIsOwner}">
@@ -76,7 +76,7 @@
                         <span class="glyphicon glyphicon-trash"></span>&nbsp;Delete Course
                     </button>
                     <button type="submit" action="" class="btn btn-primary pull-right">Update</button>
-                    <a href="/" class="btn btn-secondary pull-right">Cancel</button>
+                    <a href="" class="btn btn-secondary pull-right">Cancel</a>
                 </th:block>
             </form>
             

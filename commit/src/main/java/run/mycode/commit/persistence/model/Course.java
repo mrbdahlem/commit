@@ -50,12 +50,18 @@ public class Course implements Identifiable<String>, Serializable {
     /**
      * Default GitHub Organization to find assignments
      */
-    private String defaultAssignmentOrganization;
+    @ManyToOne(cascade = CascadeType.PERSIST,
+               fetch = FetchType.EAGER)
+    @JoinColumn(name="default_assignment_organization", nullable=true)
+    private OrgName defaultAssignmentOrganization;
     
     /**
      * GitHub Organization which will host student repositories
      */
-    private String studentOrganization;
+    @ManyToOne(cascade = CascadeType.PERSIST,
+               fetch = FetchType.EAGER)
+    @JoinColumn(name="student_organization", nullable=true)
+    private OrgName studentOrganization;
     
     /**
      * Has this course been deleted?

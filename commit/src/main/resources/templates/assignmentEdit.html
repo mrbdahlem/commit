@@ -2,28 +2,120 @@
 <html>
     <head>
         <title th:text='|commit.mycode.run ${course != null and course.name != null ? course.name : "Course"}|'>commit.mycode.run Course</title>
-        <th:block th:if="${userIsOwner}">
-            <meta name="_csrf" th:content="${_csrf.token}"/>
-            <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-        </th:block>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet"
-              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="/css/commitVweb.css" />
-    </head>
-    <body>
-        <nav th:replace="fragments/ui.html :: navbar">commit.mycode.run</nav>
+    <th:block th:if="${userIsOwner}">
+        <meta name="_csrf" th:content="${_csrf.token}"/>
+        <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    </th:block>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/commitVweb.css" />
+</head>
+<body>
+    <nav th:replace="fragments/ui.html :: navbar">commit.mycode.run</nav>
+
+    <div class='container' style="margin-top: 80px;">
+        <h2 th:if="${message}" th:text="${message}"></h2>
+        <form th:if="${assignment != null}" method="POST">
+            <div class="form-group">    
+                <label for="assignmentName"><h2>Assignment Properties</h2></label>
+                <input type='text' class='form-control form-control-lg'
+                       name='assignmentName' style="font-size: 2em; height: auto;" 
+                       placeholder='Assignment Name' th:value='${assignment.name}' />
+                <div class="pull-right">
+                     in course: <th:block th:text="${course.name}"></th:block>
+                </div>
+                <div>Embed: <span class="copyable" th:text="|${baseURL}/lti/assignment/${assignment.id}|"></span></div>
+
+            </div>
+
+            
+            <div class="form-group">
+                <label for="sourceRepo">Source Repository:</label>
+                <div class="input-group">
+                    <input type='text' class='form-control'
+                           name='sourceRepo' id='sourceRepo'
+                           placeholder='organization/repository'
+                           th:value="${assignment.sourceRepoName} ?: ${course.defaultAssignmentOrganization != null ? course.defaultAssignmentOrganization.name : ''}" 
+                           onchange='updateRepoUrl(this)'/>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" 
+                                onclick="selectRepo(this)">
+                            <span class="glyphicon glyphicon-menu-hamburger"></span>
+                        </button>
+                    </span>
+                </div>
+                <a th:href="${assignment.sourceRepoUrl}" 
+                       th:text="${assignment.sourceRepoUrl} ?: ''"
+                       target="_blank" id="repoLink"></a>
+            </div>
+            <div class="form-group">                        
+                <label>
+                    <input type='checkbox' name='allowStudentSubmissions'
+                           th:checked='${assignment.allowStudentSubmissions}' />
+                    Allow students to submit zips of repos to LMS
+                </label>
+            </div>
+            <div class="form-group">                        
+                <label>
+                    <input type='checkbox' name='studentMadeAdmin'
+                           th:checked='${assignment.studentMadeAdmin}' />
+                    Make students admins of their repos
+                </label>
+            </div>
+            <div class="form-group">  
+                <label>
+                    <input type='checkbox' name='makePrivate'
+                           th:checked='${assignment.makePrivate}' />
+                    Make student repos private
+                </label>
+            </div>
+            <div class="form-group">  
+                <label>
+                    <input type='checkbox' name='issuesEnabled'
+                           th:checked='${assignment.issuesEnabled}' />
+                    Enable issue tracking
+                </label> 
+            </div>
+            <div class="form-group">                     
+                <label>
+                    <input type='checkbox' name='wikiEnabled'
+                           th:checked='${assignment.wikiEnabled}' />
+                    Enable wikis
+                </label>
+            </div>
+            
+            
+            <th:block th:if="${userIsOwner}">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button type='button' onclick='deleteCourse()' class='btn btn-danger'>
+                    <span class="glyphicon glyphicon-trash"></span>&nbsp;Delete Assignment
+                </button>
+                <button type="submit" action="" class="btn btn-primary pull-right">Update</button>
+                <a href="" class="btn btn-secondary pull-right">Cancel</a>
+            </th:block>
+        </form>
         
-        <div class='container' style="margin-top: 80px;" th:with="user=${#authentication.getPrincipal()}">
-            <th:block th:text="${assignment.id}"></th:block>
-            <th:block th:text="${assignment.name}"></th:block>
-            <th:block th:text="${owner.name}"></th:block>
-            <th:block th:text="${course.name}"></th:block>
+        <div style="margin-top:20px;" 
+             th:if="${studentRepos != null and #lists.size(studentRepos) > 0}">
+            <label>Student Repositories:</label>
+            <div class="list-group">
+                <a th:each="repo : ${studentRepos}" th:href="repo.url" 
+                   th:text="repo.name"></a>
+            </div>
+            <button class="btn btn-secondary" th:if="${userIsOwner}" onclick="alert('Not implemented');">
+                <span class="glyphicon glyphicon-gift"></span>
+                Transfer ownership to students
+            </button>
         </div>
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-        <script sec:authorize="hasRole('ADMIN')" src="/js/admin.js"></script>
-        <script sec:authorize="hasRole('INSTRUCTOR')" src="/js/instructor.js"></script>
-    </body>
+    </div>
+    <div th:if="${assignment == null}" class="container">
+        This assignment does not exist, or you do not have permission to view it.
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script sec:authorize="hasRole('ADMIN')" src="/js/admin.js"></script>
+    <script sec:authorize="hasRole('INSTRUCTOR')" src="/js/instructor.js"></script>
+</body>
 </html>
