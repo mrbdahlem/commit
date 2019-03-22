@@ -2,12 +2,15 @@ package run.mycode.commit.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.OkUrlFactory;
 import org.kohsuke.github.GHMyself;
 import org.kohsuke.github.GHOrganization;
+import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
 import org.kohsuke.github.HttpConnector;
@@ -86,5 +89,19 @@ public class GitHubService {
         Set<GHOrganization> orgs = user.getAllOrganizations();
         orgNameService.updateAll(orgs);
         return orgs;
+    }
+    
+    public Collection<GHRepository> getRepos(String owner) throws IOException {
+        if (owner == null || owner.equals(user.getLogin())) {
+            return user.getAllRepositories().values();
+        }
+        
+        GHOrganization org = github.getOrganization(owner);
+        
+        Collection<GHRepository> repos = new ArrayList<>();
+        
+        org.listRepositories(100).forEach(repo -> repos.add(repo));
+        
+        return repos;        
     }
 }
