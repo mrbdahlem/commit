@@ -1,5 +1,8 @@
 package run.mycode.commit.web.controller;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,6 +128,13 @@ public class AssignmentController {
             a.setSourceRepoName(fp.trim());
         }
 
+        fp = formParams.getFirst("sourceRepoUrl");
+        if (fp != null && !fp.trim().isEmpty()) {
+            try {
+                a.setSourceRepoUrl(new URL(fp));
+            } catch (MalformedURLException IGNORED) {
+            }
+        }
         // Boolean (checkbox) values are present only if they are true
         fp = formParams.getFirst("allowStudentSubmissions");
         a.setAllowStudentSubmissions(fp != null);

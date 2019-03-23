@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import run.mycode.commit.persistence.model.GitHubUser;
 import run.mycode.commit.service.GitHubService;
@@ -32,7 +32,7 @@ public class UserController {
     @Autowired
     private GitHubService gitHubService;
     
-    @GetMapping("/user/orgs")
+    @PostMapping("/user/orgs")
     @ResponseBody
     public Collection<OrgInfo> getOrgs(Authentication auth) {
         GitHubUser user = (GitHubUser)auth.getPrincipal();
@@ -47,7 +47,7 @@ public class UserController {
         }
     }
     
-    @GetMapping("/user/orgRepos/{orgname}")
+    @PostMapping("/user/orgRepos/{orgname}")
     @ResponseBody
     public Collection<RepoInfo> getRepos(@PathVariable("orgname") String org,
                                          Authentication auth) {

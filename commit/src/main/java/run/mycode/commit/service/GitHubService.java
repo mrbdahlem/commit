@@ -8,6 +8,8 @@ import java.util.Set;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.OkUrlFactory;
+import okhttp3.logging.HttpLoggingInterceptor;
+import okhttp3.logging.HttpLoggingInterceptor.Level;
 import org.kohsuke.github.GHMyself;
 import org.kohsuke.github.GHOrganization;
 import org.kohsuke.github.GHRepository;
@@ -67,12 +69,18 @@ public class GitHubService {
         
         LOG.info("Caching github requests to: " + cacheDirectory.getAbsolutePath());
         
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor(LOG::info);
+        logging.setLevel(Level.BASIC);
+        
         Cache cache = new Cache(cacheDirectory, 10 * 1024 * 1024); // 10MB cache
         
-        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
-        clientBuilder.cache(cache);
-        
-        OkHttp3Connector ok3hc = new OkHttp3Connector(new OkUrlFactory(clientBuilder.build()));
+        OkHttpClient client = 
+                new OkHttpClient.Builder()
+                .addNetworkInterceptor(logging)
+                .cache(cache)
+                .build();
+
+        OkHttp3Connector ok3hc = new OkHttp3Connector(new OkUrlFactory(client));
         
         return (HttpConnector)ok3hc;
     }

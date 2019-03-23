@@ -1,3 +1,5 @@
+/* global defaultOrgId, userName */
+
 /**
  * Show the item creation form and hide the activation button
  * 
@@ -112,6 +114,11 @@ function copyInput(button) {
     return false;
 }
 
+/**
+ * Confirm, then delete the currently displayed course
+ * 
+ * @returns {Boolean} false if canceled, true if delete request was made
+ */
 function deleteCourse() {
     let doIt = confirm("Do you really want to delete this course?");
     
@@ -130,5 +137,92 @@ function deleteCourse() {
         window.location.href = '/';
     }).fail((result) => {
         alert("Could not delete the course: " + result.status + " " + result.statusText);
+    });
+}
+
+function selectRepo(repoNameInput, link) { 
+    let modal = $('#repoModal');
+    modal.modal();
+    modal.attr('dest', repoNameInput);
+    modal.attr('link', link);
+    
+    loadOrgs('#orgSelect', '#repoSelect', repoNameInput);
+}
+
+function useRepo() {
+    let modal = $('#repoModal');
+    let dest = $(modal.attr('dest'));
+    let link = $(modal.attr('link'));
+    let url = $('#repoSelect option:selected').attr('url');
+    
+    dest.val($('#repoSelect').val());
+    link.val(url);
+    link.text(url);
+    link.attr('href', url);
+    
+    modal.modal('hide');
+}
+
+function loadOrgs(select, repoSelect, dest) {
+    select = $(select);
+    repoSelect = $(repoSelect);
+    
+    let originalOrg = $(dest).val().split("/")[0];
+    
+    $.post({
+        url: '/user/orgs',
+        beforeSend: function(request) {
+            request.setRequestHeader($("meta[name='_csrf_header']").attr("content"),
+                                     $("meta[name='_csrf']").attr("content"));
+         }
+    }).done((orgs)=>{
+        select.empty();
+        
+        let user = {id: -1, name: userName, shortName: userName};
+        
+        orgs.unshift(user);
+        orgs.forEach((org)=>{
+            let opt = $('<option value=\"' + org.shortName + '\">' + org.name +
+                          '</option>');
+            
+            select.append(opt);
+
+            if ((!originalOrg && org.id === defaultOrgId)
+                    || org.shortName === originalOrg) {
+                opt.prop('selected', true);
+                
+                loadRepos(repoSelect, select, dest);
+            }            
+        });
+    });
+}
+
+function loadRepos(select, orgSelect, dest) {
+    dest = $(dest);
+    
+    select = $(select);
+    orgSelect = $(orgSelect);
+    
+    let org = orgSelect.val();
+    
+    $.post({
+        url: '/user/orgRepos/' + org,
+        beforeSend: function(request) {
+            request.setRequestHeader($("meta[name='_csrf_header']").attr("content"),
+                                     $("meta[name='_csrf']").attr("content"));
+         }
+    }).done((repos)=>{
+        select.empty();
+        
+        repos.forEach((repo)=>{
+            let opt = $('<option value=\"' + repo.fullName + '\" url=\"' + 
+                    repo.url + '\">' + repo.name + '</option>');
+                  
+            if (dest && repo.fullName === dest.val()) {
+                opt.prop('selected', true);
+            }
+            
+            select.append(opt);
+        });
     });
 }

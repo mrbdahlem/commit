@@ -24,31 +24,33 @@
                        name='assignmentName' style="font-size: 2em; height: auto;" 
                        placeholder='Assignment Name' th:value='${assignment.name}' />
                 <div class="pull-right">
-                     in course: <th:block th:text="${course.name}"></th:block>
+                    in course: <th:block th:text="${course.name}"></th:block>
                 </div>
                 <div>Embed: <span class="copyable" th:text="|${baseURL}/lti/assignment/${assignment.id}|"></span></div>
 
             </div>
 
-            
             <div class="form-group">
                 <label for="sourceRepo">Source Repository:</label>
                 <div class="input-group">
                     <input type='text' class='form-control'
                            name='sourceRepo' id='sourceRepo'
                            placeholder='organization/repository'
-                           th:value="${assignment.sourceRepoName} ?: ${course.defaultAssignmentOrganization != null ? course.defaultAssignmentOrganization.name : ''}" 
+                           th:value="${assignment.sourceRepoName} ?: 
+                           ${course.defaultAssignmentOrganization != null ? course.defaultAssignmentOrganization.name : ''}" 
                            onchange='updateRepoUrl(this)'/>
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-default" 
-                                onclick="selectRepo(this)">
+                                onclick="selectRepo('#sourceRepo', '#repoLink, #sourceRepoUrl')">
                             <span class="glyphicon glyphicon-menu-hamburger"></span>
                         </button>
                     </span>
                 </div>
+                <input type='hidden' th:value='${assignment.sourceRepoUrl}' 
+                       id='sourceRepoUrl' name='sourceRepoUrl' />
                 <a th:href="${assignment.sourceRepoUrl}" 
-                       th:text="${assignment.sourceRepoUrl} ?: ''"
-                       target="_blank" id="repoLink"></a>
+                   th:text="${assignment.sourceRepoUrl} ?: ''"
+                   target="_blank" id="repoLink"></a>
             </div>
             <div class="form-group">                        
                 <label>
@@ -85,8 +87,8 @@
                     Enable wikis
                 </label>
             </div>
-            
-            
+
+
             <th:block th:if="${userIsOwner}">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                 <button type='button' onclick='deleteCourse()' class='btn btn-danger'>
@@ -96,7 +98,7 @@
                 <a href="" class="btn btn-secondary pull-right">Cancel</a>
             </th:block>
         </form>
-        
+
         <div style="margin-top:20px;" 
              th:if="${studentRepos != null and #lists.size(studentRepos) > 0}">
             <label>Student Repositories:</label>
@@ -117,5 +119,38 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script sec:authorize="hasRole('ADMIN')" src="/js/admin.js"></script>
     <script sec:authorize="hasRole('INSTRUCTOR')" src="/js/instructor.js"></script>
+
+    <script th:inline="javascript">
+        var defaultOrgId = /*[[${course.defaultAssignmentOrganization.id}]]*/ 0;
+        var userName = /*[[${owner.githubUsername}]]*/ "username";
+    </script>
+    
+    <div id='repoModal' class="modal fade" role='dialog'>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Select the source repository</h4>
+                </div>
+                <div class="modal-body">
+                    <div class='form-group'>
+                        <label for="orgSelect">Organization:</label>
+                        <select class='form-control' id='orgSelect'
+                                onChange='loadRepos("#repoSelect", this)'>
+                        </select>
+                    </div>
+                    <div class='form-group'>
+                        <label for="repoSelect">Repository:</label>
+                        <select class='form-control' id='repoSelect'>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick='useRepo();'>Use this repo</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 </body>
 </html>
