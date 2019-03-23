@@ -17,7 +17,7 @@
                 </button>
                 <a class="navbar-brand" href="/">commit.mycode.run&#32;<img src="/winkingmonkey.svg" alt="winking monkey" style="display: inline-block; vertical-align:bottom; height: 1.5em;"></a>
               </div>
-              <div id="navbar" class="collapse navbar-collapse">
+              <div id="navbar" class="collapse navbar-collapse" th:if="${noLogout == null}">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
                         <a href="/logout.html" class="btn btn-secondary">Logout <th:block sec:authentication="name">user</th:block></a>

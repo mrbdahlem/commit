@@ -18,7 +18,7 @@ import run.mycode.commit.security.UserEnabledFilter;
 import run.mycode.commit.persistence.service.IGitHubUserService;
 
 @Configuration
-@Order(1)
+@Order(2)
 @PropertySource("application.properties")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {    
     @Autowired
@@ -27,11 +27,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-            .antMatchers("/login.html", "/loginFailure", "/disabled.html",
+            .antMatchers("/login.html", "/loginFailure", "/disabled.html", "/error",
                          "/*.ico", "/*.png", "/*.svg", "/css/**", "/js/**")
-            .permitAll()
+                .permitAll()
             .anyRequest()
-            .authenticated()
+                .authenticated()
             .and()
             .oauth2Login()
                 .loginPage("/login.html")
@@ -61,5 +61,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> accessTokenResponseClient() {
         DefaultAuthorizationCodeTokenResponseClient accessTokenResponseClient = new DefaultAuthorizationCodeTokenResponseClient();
         return accessTokenResponseClient;
-    }
+    }    
 }

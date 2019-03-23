@@ -14,9 +14,14 @@ import org.springframework.web.servlet.ModelAndView;
  */
 public class MessageView extends ModelAndView {
     public MessageView(String msg, String redirect) {
+        this(msg, redirect, 3);
+    }
+    
+    public MessageView(String msg, String redirect, int refreshTime) {
         super("message");
         this.setStatus(HttpStatus.OK);
         this.addObject("message", msg);
         this.addObject("redir", redirect);
+        this.addObject("refreshtime", refreshTime);
     }
 }
