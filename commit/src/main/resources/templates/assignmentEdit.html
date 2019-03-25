@@ -2,16 +2,16 @@
 <html>
     <head>
         <title th:text='|commit.mycode.run ${course != null and course.name != null ? course.name : "Course"}|'>commit.mycode.run Course</title>
-    <th:block th:if="${userIsOwner}">
-        <meta name="_csrf" th:content="${_csrf.token}"/>
-        <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-    </th:block>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="/css/commitVweb.css" />
-</head>
+        <th:block th:if="${userIsOwner}">
+            <meta name="_csrf" th:content="${_csrf.token}"/>
+            <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+        </th:block>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet"
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/css/commitVweb.css" />
+    </head>
 <body>
     <nav th:replace="fragments/ui.html :: navbar">commit.mycode.run</nav>
 
@@ -99,17 +99,9 @@
             </th:block>
         </form>
 
-        <div style="margin-top:20px;" 
-             th:if="${studentRepos != null and #lists.size(studentRepos) > 0}">
-            <label>Student Repositories:</label>
-            <div class="list-group">
-                <a th:each="repo : ${studentRepos}" th:href="repo.url" 
-                   th:text="repo.name"></a>
-            </div>
-            <button class="btn btn-secondary" th:if="${userIsOwner}" onclick="alert('Not implemented');">
-                <span class="glyphicon glyphicon-gift"></span>
-                Transfer ownership to students
-            </button>
+        <div style="margin-top:20px;">
+            <label>Student Repositories</label>
+            <th:block th:replace="fragments/repo.html :: studentRepoList" />
         </div>
     </div>
     <div th:if="${assignment == null}" class="container">
@@ -121,10 +113,10 @@
     <script sec:authorize="hasRole('INSTRUCTOR')" src="/js/instructor.js"></script>
 
     <script th:inline="javascript">
-        var defaultOrgId = /*[[${course.defaultAssignmentOrganization.id}]]*/ 0;
-        var userName = /*[[${owner.githubUsername}]]*/ "username";
+                var defaultOrgId = /*[[${course.defaultAssignmentOrganization.id}]]*/ 0;
+                var userName = /*[[${owner.githubUsername}]]*/ "username";
     </script>
-    
+
     <div id='repoModal' class="modal fade" role='dialog'>
         <div class="modal-dialog">
             <div class="modal-content">

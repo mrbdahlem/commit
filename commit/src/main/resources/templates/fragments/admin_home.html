@@ -7,7 +7,7 @@
     </head>
     <body>
         <th:block th:fragment='adminTabContents'>
-            <div th:if="${disabledUsers != null}">
+            <div th:unless="${disabledUsers == null or disabledUsers.empty}">
                 <h2>Disabled Users:</h2>
                 <div class="container">
                     <th:block th:each="dUser : ${disabledUsers}" th:insert="fragments/admin_ui.html :: enableUserCard"></th:block>

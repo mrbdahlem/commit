@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Repo Display Elements</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <nav th:fragment="repoNav" class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+              <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+                  <a class="navbar-brand" th:href="${repoUrl}" 
+                     th:text="${repoName}" target="_blank"></a>
+              </div>
+              <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <!-- navbar menu -->
+                    </li>
+                </ul>
+              </div><!--/.nav-collapse -->
+            </div>
+        </nav>
+        
+        <th:block th:fragment="studentRepoList">
+            <!-- a list of the student copies of the repository -->
+            <div th:unless="${studentRepos == null or studentRepos.empty}">
+                <!-- only display the list if there are student copies -->
+                <div class="list-group">
+                    <a th:each="repo : ${studentRepos}" th:href="repo.url" 
+                       th:text="repo.name" class="list-group-item"></a>
+                </div>
+                <button class="btn btn-secondary" th:if="${userIsOwner}" onclick="alert('Not implemented');">
+                    <span class="glyphicon glyphicon-gift"></span>
+                    Transfer ownership to students
+                </button>
+            </div>
+            <div th:if="${studentRepos == null or studentRepos.empty}">
+                No Student Repos
+            </div>            
+        </th:block>
+    
+    </body>
+</html>

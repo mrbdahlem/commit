@@ -94,6 +94,7 @@ public class LtiController {
             
             mv = new ModelAndView("repoInstructor");
             
+            mv.addObject("repoName", a.getSourceRepoName());
             mv.addObject("repoUrl", a.getSourceRepoUrl());
         }
         else {
