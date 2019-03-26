@@ -16,7 +16,7 @@
         <nav th:replace="fragments/repo.html :: repoNav">commit.mycode.run</nav>
         
         <div class="content">
-        
+            <th:block th:replace="fragments/repo.html :: repoInfo" />
             <!-- show student copies of this repo -->
             <label>Student Copies</label>
             <th:block th:replace="fragments/repo.html :: studentRepoList" />

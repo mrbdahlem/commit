@@ -18,6 +18,8 @@ import org.springframework.web.servlet.ModelAndView;
 import run.mycode.commit.persistence.model.Assignment;
 import run.mycode.commit.persistence.service.IAssignmentService;
 import run.mycode.commit.persistence.service.ICourseService;
+import run.mycode.commit.service.GitHubService;
+import run.mycode.commit.web.dto.RepoInfo;
 import run.mycode.commit.web.util.ErrorView;
 import run.mycode.commit.web.util.MessageView;
 import run.mycode.lti.launch.model.LtiLaunchData;
@@ -36,6 +38,9 @@ public class LtiController {
     
     @Autowired
     ICourseService courseService;
+    
+    @Autowired
+    GitHubService githubService;
     
     @Autowired
     IAssignmentService assignmentService;
@@ -94,8 +99,10 @@ public class LtiController {
             
             mv = new ModelAndView("repoInstructor");
             
-            mv.addObject("repoName", a.getSourceRepoName());
-            mv.addObject("repoUrl", a.getSourceRepoUrl());
+            String repoName = a.getSourceRepoName();
+            RepoInfo repo = new RepoInfo(githubService.getRepo(repoName));
+            
+            mv.addObject("repo", repo);
         }
         else {
             return new ErrorView (HttpStatus.FORBIDDEN,
