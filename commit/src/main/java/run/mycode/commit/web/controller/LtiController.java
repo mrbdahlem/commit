@@ -1,5 +1,6 @@
 package run.mycode.commit.web.controller;
 
+import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -99,10 +100,15 @@ public class LtiController {
             
             mv = new ModelAndView("repoInstructor");
             
-            String repoName = a.getSourceRepoName();
-            RepoInfo repo = new RepoInfo(githubService.getRepo(repoName));
-            
-            mv.addObject("repo", repo);
+            try {
+                String repoName = a.getSourceRepoName();
+                RepoInfo repo = new RepoInfo(githubService.getRepo(repoName));
+
+                mv.addObject("repo", repo);
+            }
+            catch (IOException IGNORED) {
+                
+            }
         }
         else {
             return new ErrorView (HttpStatus.FORBIDDEN,
