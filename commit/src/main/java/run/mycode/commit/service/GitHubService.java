@@ -112,4 +112,8 @@ public class GitHubService {
         
         return repos;        
     }
+    
+    public GHRepository getRepo(String name) throws IOException {
+        return github.getRepository(name);
+    }
 }
