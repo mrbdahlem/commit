@@ -16,11 +16,16 @@ public class RepoInfo {
     private String name;
     private String fullName;
     private URL url;
+    private String gitUrl; 
+    private String description;
+    
     
     public RepoInfo(GHRepository repo) {
         this.id = repo.getId();
         this.name = repo.getName();
         this.fullName = repo.getFullName();
         this.url = repo.getHtmlUrl();
+        this.gitUrl = repo.getHttpTransportUrl();
+        this.description = repo.getDescription();
     }
 }

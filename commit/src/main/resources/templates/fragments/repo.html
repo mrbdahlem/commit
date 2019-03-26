@@ -7,7 +7,7 @@
     </head>
     <body>
         <nav th:fragment="repoNav" class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container">
+            <div>
               <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                   <span class="sr-only">Toggle navigation</span>
@@ -47,7 +47,19 @@
         </th:block>
     
         <th:block th:fragment="repoInfo">
-            
+            <p th:text="${repo.description}"></p>
+            <p>Last Updated: <span class="dateTime" th:text="${#dates.formatISO(repo.lastUpdated)}"></span></p>
+            <div class="form-group">
+                <label for='cloneUrl'>Clone Your repository with this URL:</label>
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" onclick="copyInput(this)">
+                            <span class="glyphicon glyphicon-copy"></span>
+                        </button>
+                    </span>
+                    <input type='text' id='cloneUrl' class='form-control' readonly th:value='${repo.gitUrl}' />
+                </div>
+            </div>
         </th:block>
     
     </body>

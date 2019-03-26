@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
+import java.util.List;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.OkUrlFactory;
@@ -21,10 +22,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth.provider.ConsumerCredentials;
 import org.springframework.stereotype.Service;
+import run.mycode.commit.persistence.model.Course;
 import run.mycode.commit.persistence.model.GitHubUser;
 import run.mycode.commit.persistence.service.IOrgNameService;
+import run.mycode.commit.persistence.service.ICourseService;
+import run.mycode.lti.launch.model.LtiSession;
+import run.mycode.lti.launch.model.LtiLaunchData.InstitutionRole;
+
+import javax.servlet.http.HttpSession;
 
 /**
  * A combined library of REST and GraphQL services provided by GitHub.
@@ -47,16 +56,48 @@ public class GitHubService {
      * Create a GitHubService for use by the current user
      * @throws IOException 
      */
-    public GitHubService() throws IOException {
-        GitHubUser usr = (GitHubUser)SecurityContextHolder.getContext()
-                                                          .getAuthentication()
-                                                          .getPrincipal();
+    @Autowired
+    public GitHubService(ICourseService courseService) throws IOException {
+        Authentication auth = SecurityContextHolder.getContext()
+                                                   .getAuthentication();
+                                                   
+                                          
+        Object usr = auth.getPrincipal();
+        
+        GitHubUser gUser;
+        
+        if (usr instanceof GitHubUser) {
+            gUser = (GitHubUser)usr;    
+        }
+        else if (usr instanceof ConsumerCredentials) {
+            //TODO: get the user's github token to create the github instance
+            ConsumerCredentials creds = (ConsumerCredentials)usr;
+            String courseKey = creds.getConsumerKey();
+            
+            //TODO: add other roles
+            // if (authRoles.contains(InstitutionRole.Instructor) ||
+            //      authRoles.contains(InstitutionRole.ContentDeveloper) ||
+            //      authRoles.contains(InstitutionRole.Creator)) {
+            Course course = courseService.getByKey(courseKey);
+            gUser = course.getOwner();
+            // }
+            // else if (authRoles.contains(InstitutionRole.Learner)) {
+            //     throw new IOException("Not implemented");
+            // }
+            // else {
+            //     throw new IOException();
+            // }
+        }
+        else {
+            //FIX: need to throw a better exception
+            throw new IOException();
+        }
         
         github = new GitHubBuilder()
-                .withOAuthToken(usr.getGithubToken())
-                .withConnector(GitHubService.getConnector())
-                .build();
-        
+                    .withOAuthToken(gUser.getGithubToken())
+                    .withConnector(GitHubService.getConnector())
+                    .build();
+                    
         user = github.getMyself();
     }
     
