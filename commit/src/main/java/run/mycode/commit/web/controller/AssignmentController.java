@@ -2,7 +2,6 @@ package run.mycode.commit.web.controller;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +23,6 @@ import run.mycode.commit.persistence.model.Course;
 import run.mycode.commit.persistence.model.GitHubUser;
 import run.mycode.commit.persistence.service.IAssignmentService;
 import run.mycode.commit.persistence.service.ICourseService;
-import run.mycode.commit.service.GitHubService;
 import run.mycode.commit.web.util.ErrorView;
 
 /**
@@ -42,9 +40,6 @@ public class AssignmentController {
 
     @Autowired
     private ICourseService courseService;
-
-    @Autowired
-    private GitHubService gitHubService;
 
     /**
      * Allow a user to create a new assignment for a course

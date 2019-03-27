@@ -19,13 +19,16 @@ import org.springframework.web.servlet.ModelAndView;
 import run.mycode.commit.persistence.model.Assignment;
 import run.mycode.commit.persistence.service.IAssignmentService;
 import run.mycode.commit.persistence.service.ICourseService;
+import run.mycode.commit.persistence.service.IOrgNameService;
 import run.mycode.commit.service.GitHubService;
 import run.mycode.commit.web.dto.RepoDetailedInfo;
 import run.mycode.commit.web.util.ErrorView;
 import run.mycode.commit.web.util.MessageView;
+import run.mycode.lti.launch.exception.NoLtiSessionException;
 import run.mycode.lti.launch.model.LtiLaunchData;
 import run.mycode.lti.launch.model.LtiLaunchData.InstitutionRole;
 import run.mycode.lti.launch.model.LtiSession;
+import run.mycode.lti.launch.service.LtiSessionService;
 
 /**
  *
@@ -40,11 +43,17 @@ public class LtiController {
     @Autowired
     ICourseService courseService;
     
-    @Autowired
-    GitHubService githubService;
+//    @Autowired
+//    GitHubService githubService;
     
     @Autowired
     IAssignmentService assignmentService;
+    
+    @Autowired
+    IOrgNameService orgNameService;
+    
+    @Autowired
+    LtiSessionService ltiSessionService;
     
     /**
      * The LTI assignment entrypoint. Create a new LTI session with the launch
@@ -62,8 +71,8 @@ public class LtiController {
     public ModelAndView ltiAssignment(@ModelAttribute LtiLaunchData ltiData,
                                       @PathVariable("aid") Long assignmentId,
                                       Authentication auth,
-                                      HttpServletRequest request) {
- 
+                                      HttpServletRequest request) throws IOException, NoLtiSessionException {
+         
         LtiSession ltiSession = buildLtiSession(ltiData, request);
         
         if (ltiSession == null || ltiSession.getLtiLaunchData() == null) {
@@ -75,6 +84,8 @@ public class LtiController {
             }
             return new ErrorView(HttpStatus.BAD_REQUEST, "No LTI Session!");
         }
+        
+        GitHubService githubService = new GitHubService(courseService, orgNameService, ltiSessionService, auth);
         
         String courseKey = ((ConsumerCredentials)auth.getPrincipal()).getConsumerKey();
         
@@ -140,7 +151,7 @@ public class LtiController {
         newLtiSession.setLtiLaunchData(ltiData);
         
         session = request.getSession(true);
-        session.setAttribute("LtiSession", newLtiSession);
+        session.setAttribute(LtiSession.class.getName(), newLtiSession);
                 
         LOG.info("launching LTI integration as user " + eID);
         

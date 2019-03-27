@@ -2,6 +2,7 @@ package run.mycode.commit.web.controller;
 
 import java.io.IOException;
 import java.util.UUID;
+import java.util.logging.Level;
 import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,7 @@ import run.mycode.commit.persistence.service.IOrgNameService;
 import run.mycode.commit.service.GitHubService;
 import run.mycode.commit.web.util.ErrorView;
 import run.mycode.commit.web.util.MessageView;
+import run.mycode.lti.launch.exception.NoLtiSessionException;
 
 /**
  *
@@ -43,8 +45,8 @@ public class CourseController {
     @Autowired
     private IAssignmentService assignmentService;
     
-    @Autowired
-    private GitHubService gitHubService;
+//    @Autowired
+//    private GitHubService gitHubService;
     
     @Autowired
     private IOrgNameService orgNameService;
@@ -78,7 +80,7 @@ public class CourseController {
     @Transactional
     @GetMapping("/course/{cid}/edit")
     public ModelAndView courseInfo(@PathVariable("cid") String courseId,
-                                    Authentication auth) {
+                                    Authentication auth) throws IOException {
         // Lookup the course metadata based on the supplied id
         Course c = courseService.getByKey(courseId);
         
@@ -97,18 +99,28 @@ public class CourseController {
             return new ErrorView(HttpStatus.UNAUTHORIZED, 
                                  "You don't have permission to view this course.");
         }
-        
+
         // Otherwise, display the course's metadata
         ModelAndView view = new ModelAndView("courseEdit");
         view.addObject("course", c);
-        
-        // Add the user's accessible github organizations to allow updating
+
         try {
-            view.addObject("orgs", gitHubService.getOrgs());
-        }
-        catch (IOException IGNORED) {};
+            GitHubService gitHubService = new GitHubService(courseService, orgNameService, null, auth);
         
-        view.addObject("userIsOwner", user.getId().equals(owner.getId()));
+            // Add the user's accessible github organizations to allow updating
+            try {
+                view.addObject("orgs", gitHubService.getOrgs());
+            }
+            catch (IOException IGNORED) {
+                
+            }
+
+            view.addObject("userIsOwner", user.getId().equals(owner.getId()));
+
+        } 
+        catch (NoLtiSessionException IGNORED) {
+            
+        }
         
         return view;
     }
