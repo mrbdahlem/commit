@@ -36,8 +36,8 @@
                     <input type='text' class='form-control'
                            name='sourceRepo' id='sourceRepo'
                            placeholder='organization/repository'
-                           th:value="${assignment.sourceRepoName} ?: 
-                           ${course.defaultAssignmentOrganization != null ? course.defaultAssignmentOrganization.name : ''}" 
+                           th:value="${assignment.sourceRepoName ?: 
+                           (course.defaultAssignmentOrganization != null ? course.defaultAssignmentOrganization.name : '')}" 
                            onchange='updateRepoUrl(this)'/>
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-default" 
