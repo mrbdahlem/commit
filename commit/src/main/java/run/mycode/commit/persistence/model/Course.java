@@ -38,7 +38,7 @@ public class Course implements Identifiable<String>, Serializable {
     private String sharedSecret;
 
     @ManyToOne(cascade = CascadeType.PERSIST,
-               fetch = FetchType.LAZY)
+               fetch = FetchType.EAGER)
     @JoinColumn(name="owner_id", nullable=false)
     private GitHubUser owner;
 
