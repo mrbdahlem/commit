@@ -49,4 +49,9 @@ public class CourseService implements ICourseService {
     public Course update(Course c) {
         return courseRepo.save(c);
     }
+
+    @Override
+    public GitHubUser getOwnerByKey(String key) {
+        return courseRepo.getOwnerByKey(key);
+    }
 }

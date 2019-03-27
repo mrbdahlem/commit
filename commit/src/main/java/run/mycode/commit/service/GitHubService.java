@@ -82,8 +82,8 @@ public class GitHubService {
             if (authRoles.contains(InstitutionRole.Instructor)
                     || authRoles.contains(InstitutionRole.ContentDeveloper)
                     || authRoles.contains(InstitutionRole.Creator)) {
-                Course course = courseService.getByKey(courseKey);
-                gUser = course.getOwner();
+                gUser = courseService.getOwnerByKey(courseKey);
+                //gUser = course.getOwner();
             }
             else if (authRoles.contains(InstitutionRole.Learner)) {
                 throw new IOException("Not implemented");

@@ -27,4 +27,6 @@ public interface ICourseService {
     public Set<Course> findByOwnerNotDeleted(GitHubUser owner);
     
     public Course update(Course c);
+    
+    public GitHubUser getOwnerByKey(String key); 
 }

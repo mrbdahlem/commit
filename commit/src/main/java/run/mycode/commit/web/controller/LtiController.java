@@ -73,7 +73,7 @@ public class LtiController {
                                       Authentication auth,
                                       HttpServletRequest request) throws IOException, NoLtiSessionException {
          
-        LtiSession ltiSession = buildLtiSession(ltiData, request);
+        LtiSession ltiSession = ltiSessionService.buildLtiSession(ltiData, request);
         
         if (ltiSession == null || ltiSession.getLtiLaunchData() == null) {
             if (ltiSession == null) {
@@ -130,31 +130,4 @@ public class LtiController {
         return mv;
     }
     
-    /**
-     * Create a new Lti session for the request
-     * 
-     * @param ltiData the LTI parameters sent with the request
-     * @param request the current request
-     * 
-     * @return the LtiSession data 
-     */
-    private LtiSession buildLtiSession(LtiLaunchData ltiData, 
-            HttpServletRequest request) {
-               
-        HttpSession session = request.getSession();
-        
-        session.invalidate();
-        
-        String eID = ltiData.getUser_id();
-        LtiSession newLtiSession = new LtiSession();
-        newLtiSession.setEid(eID);
-        newLtiSession.setLtiLaunchData(ltiData);
-        
-        session = request.getSession(true);
-        session.setAttribute(LtiSession.class.getName(), newLtiSession);
-                
-        LOG.info("launching LTI integration as user " + eID);
-        
-        return newLtiSession;
-    }    
 }
